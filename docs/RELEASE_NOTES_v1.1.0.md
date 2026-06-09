@@ -25,7 +25,7 @@
 ## Не требуется
 
 - No More Background
-- Quest Task Kuller (QTKiller)
+- Quest Task Killer (QTKiller)
 
 ## Лицензия
 

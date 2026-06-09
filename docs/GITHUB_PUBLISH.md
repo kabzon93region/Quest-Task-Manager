@@ -25,7 +25,9 @@ cd B:\quest3\PC\quest-task-manager
 .\scripts\build-apk.ps1 -Release
 ```
 
-Результат: `dist\QTaskMgr-v1.1.0-release.apk`
+Результат: `dist\QTaskMgr-v1.1.1-release.apk`
+
+Release подписывается debug-ключом (для SideQuest/adb). Без подписи Android выдаёт `INSTALL_PARSE_FAILED_NO_CERTIFICATES`.
 
 ### 1.3. Инициализировать Git (если ещё не сделано)
 
@@ -72,14 +74,18 @@ git push -u origin main
 
 ---
 
-## Часть 3. GitHub Release (v1.1.0)
+## Часть 3. GitHub Release
+
+### v1.1.1 (исправление подписи)
 
 1. Репозиторий → **Releases** → **Draft a new release**
-2. **Tag:** `v1.1.0` (create new tag on `main`)
-3. **Title:** `Quest Task Manager v1.1.0`
-4. **Description** — см. шаблон в [RELEASE_NOTES_v1.1.0.md](RELEASE_NOTES_v1.1.0.md)
-5. Прикрепить: `dist\QTaskMgr-v1.1.0-release.apk`
+2. **Tag:** `v1.1.1` (create new tag on `main`)
+3. **Title:** `Quest Task Manager v1.1.1`
+4. **Description** — см. [RELEASE_NOTES_v1.1.1.md](RELEASE_NOTES_v1.1.1.md)
+5. Прикрепить: `dist\QTaskMgr-v1.1.1-release.apk`
 6. **Publish release**
+
+> v1.1.0 без подписи не ставится через SideQuest (`INSTALL_PARSE_FAILED_NO_CERTIFICATES`). Старый asset можно удалить или пометить release как deprecated.
 
 ---
 

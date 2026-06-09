@@ -11,8 +11,8 @@ android {
         applicationId = "com.quest3.taskmanager"
         minSdk = 29
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.1"
     }
 
     // Optional release signing: create keystore.properties (see docs/GITHUB_PUBLISH.md)
@@ -33,7 +33,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            // signingConfig = signingConfigs.getByName("release")
+            // Sideload (SideQuest/adb): debug-подпись, пока нет keystore.properties
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

@@ -42,7 +42,7 @@ Full text: https://www.apache.org/licenses/LICENSE-2.0
 ## Inspiration and compatibility (no code copied)
 
 - **No More Background** ([adil192/no_more_background](https://github.com/adil192/no_more_background)) — GPL-3.0-or-later Flutter app. QTaskMgr is an independent Kotlin application. Using the same Android system settings does not make QTaskMgr a derivative work of NMB.
-- **Quest Task Kuller (QTKiller)** — separate MIT project by the same author. Optional; QTaskMgr v1.1+ includes its own notification-based rules cleanup.
+- **Quest Task Killer (QTKiller)** — separate MIT project by the same author. Optional; QTaskMgr v1.1+ includes its own notification-based rules cleanup.
 
 ---
 

@@ -8,7 +8,7 @@
 |---|---|
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
-| **Версия** | 1.1.0 |
+| **Версия** | 1.1.1 |
 
 ## Возможности
 
@@ -33,7 +33,7 @@
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
 
 ```powershell
-adb install -r dist\QTaskMgr-v1.1.0-release.apk
+adb install -r dist\QTaskMgr-v1.1.1-release.apk
 ```
 
 ## Быстрый старт
@@ -53,7 +53,7 @@ adb install -r dist\QTaskMgr-v1.1.0-release.apk
 .\scripts\build-apk.ps1                 # debug APK
 ```
 
-Требуется: JDK 17, Android SDK, Gradle 8.2+ (или локальный из `quest-app-guard\.gradle-local`).
+Требуется: JDK 17, Android SDK, Gradle 8.2+ (или локальный из `quest-task-killer\.gradle-local`).
 
 ## Структура проекта
 
@@ -64,7 +64,8 @@ quest-task-manager/
 ├── docs/
 │   ├── THIRD_PARTY.md      # лицензии зависимостей
 │   ├── GITHUB_PUBLISH.md   # публикация на GitHub
-│   └── RELEASE_NOTES_v1.1.0.md
+│   ├── RELEASE_NOTES_v1.1.0.md
+│   └── RELEASE_NOTES_v1.1.1.md
 ├── scripts/
 ├── src/quest-app/          # Android Gradle project
 └── dist/                   # собранные APK (в .gitignore)
@@ -82,7 +83,7 @@ quest-task-manager/
 
 | Проект | Связь |
 |--------|-------|
-| [Quest Task Kuller (QTKiller)](https://github.com/kabzon93region/quest-task-kuller) | Опционально; отдельный package, режим AGGRESSIVE при повторном запуске |
+| [Quest Task Killer (QTKiller)](https://github.com/kabzon93region/quest-task-killer) | Опционально; отдельный package, режим AGGRESSIVE при повторном запуске |
 | [No More Background](https://github.com/adil192/no_more_background) | Аналогичная идея; QTaskMgr — независимая реализация |
 
 ## Disclaimer
