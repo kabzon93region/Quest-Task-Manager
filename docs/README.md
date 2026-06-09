@@ -7,11 +7,13 @@
 
 ## Релизы
 
+Файлы `RELEASE_NOTES_v*.md` — только **«Что нового»** для GitHub Releases. Установка и возможности — в [README.md](../README.md).
+
 | Документ | Описание |
 |----------|----------|
-| [RELEASE_NOTES_v1.1.2.md](RELEASE_NOTES_v1.1.2.md) | Текущий релиз — исправление запуска и лога |
-| [RELEASE_NOTES_v1.1.1.md](RELEASE_NOTES_v1.1.1.md) | Подпись release APK |
-| [RELEASE_NOTES_v1.1.0.md](RELEASE_NOTES_v1.1.0.md) | Первый функциональный релиз v1.1 |
+| [RELEASE_NOTES_v1.1.2.md](RELEASE_NOTES_v1.1.2.md) | v1.1.2 — запуск и лог |
+| [RELEASE_NOTES_v1.1.1.md](RELEASE_NOTES_v1.1.1.md) | v1.1.1 — подпись APK |
+| [RELEASE_NOTES_v1.1.0.md](RELEASE_NOTES_v1.1.0.md) | v1.1.0 — первый релиз v1.1 |
 
 ---
 

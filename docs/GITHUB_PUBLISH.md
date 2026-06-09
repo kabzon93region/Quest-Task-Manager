@@ -96,8 +96,14 @@ git push -u origin main
 
 ## Часть 3.1. Последующие релизы (шпаргалка)
 
+### Формат `RELEASE_NOTES_vX.Y.Z.md`
+
+Только блок **«Что нового в vX.Y.Z»** — изменения этой версии.
+
+Не дублировать установку, возможности, требования и лицензию: они описаны в [README.md](../README.md). Полные секции в release notes — только если в этой версии они **реально изменились** (новый способ установки, новые требования и т.п.).
+
 1. Обновить `versionCode` / `versionName` в `src/quest-app/app/build.gradle.kts` и `scripts/build-apk.ps1`.
-2. Добавить запись в `CHANGELOG.md` и `docs/RELEASE_NOTES_vX.Y.Z.md`.
+2. Добавить запись в `CHANGELOG.md` и `docs/RELEASE_NOTES_vX.Y.Z.md` (по правилу выше).
 3. `.\scripts\build-apk.ps1 -Release`
 4. Commit + push в `main`.
 5. GitHub → Releases → тег `vX.Y.Z` → описание из `RELEASE_NOTES` → asset `dist\QTaskMgr-vX.Y.Z-release.apk`.
