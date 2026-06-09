@@ -28,6 +28,7 @@ class CleanupForegroundService : Service() {
         super.onCreate()
         isActive = true
         createNotificationChannel()
+        FileLogger.configure(applicationContext)
         FileLogger.i("cleanup service created")
     }
 

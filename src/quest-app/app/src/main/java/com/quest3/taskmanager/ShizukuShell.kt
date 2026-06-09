@@ -25,7 +25,8 @@ object ShizukuShell {
             return ShellResult(-1, stdout, stderr.ifBlank { "timeout" })
         }
         val exit = process.exitValue()
-        FileLogger.d("shell exit=$exit cmd=${command.take(100)}")
+        // Только logcat — запись в FileLogger вызывала рекурсию через appendViaShizuku
+        Log.d(TAG, "shell exit=$exit cmd=${command.take(100)}")
         return ShellResult(exit, stdout, stderr)
     }
 

@@ -28,8 +28,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        FileLogger.configure(this)
-        FileLogger.i("Quest Task Manager started")
+        FileLogger.onAppLaunch(this)
 
         setSupportActionBar(binding.toolbar)
 

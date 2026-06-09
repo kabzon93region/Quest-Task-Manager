@@ -76,4 +76,4 @@ When redistributing QTaskMgr (source or APK):
 
 ---
 
-*Last updated for QTaskMgr v1.1.0*
+*Last updated for QTaskMgr v1.1.2*

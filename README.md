@@ -8,7 +8,7 @@
 |---|---|
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
-| **Версия** | 1.1.1 |
+| **Версия** | 1.1.2 |
 
 ## Возможности
 
@@ -33,7 +33,7 @@
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
 
 ```powershell
-adb install -r dist\QTaskMgr-v1.1.1-release.apk
+adb install -r dist\QTaskMgr-v1.1.2-release.apk
 ```
 
 ## Быстрый старт
@@ -43,7 +43,7 @@ adb install -r dist\QTaskMgr-v1.1.1-release.apk
 3. **Настройки** — включите «Фоновая очистка (уведомление)».
 4. Перед игрой — тап по уведомлению QTaskMgr → закроются apps с запрещённым фоном.
 
-Лог по умолчанию: `/sdcard/Download/QTaskManager.log`
+Лог по умолчанию: `/sdcard/Download/QTaskManager.log` (очищается при каждом запуске из лаунчера)
 
 ## Сборка
 
@@ -61,11 +61,14 @@ adb install -r dist\QTaskMgr-v1.1.1-release.apk
 quest-task-manager/
 ├── LICENSE
 ├── NOTICE
+├── CHANGELOG.md
 ├── docs/
-│   ├── THIRD_PARTY.md      # лицензии зависимостей
-│   ├── GITHUB_PUBLISH.md   # публикация на GitHub
+│   ├── README.md
+│   ├── THIRD_PARTY.md
+│   ├── GITHUB_PUBLISH.md
 │   ├── RELEASE_NOTES_v1.1.0.md
-│   └── RELEASE_NOTES_v1.1.1.md
+│   ├── RELEASE_NOTES_v1.1.1.md
+│   └── RELEASE_NOTES_v1.1.2.md
 ├── scripts/
 ├── src/quest-app/          # Android Gradle project
 └── dist/                   # собранные APK (в .gitignore)
