@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quest Task Manager</string>
+    <string name="app_name_short">QTaskMgr</string>
+    <string name="tab_running">Запущенные</string>
+    <string name="tab_apps">Приложения</string>
+    <string name="tab_settings">Настройки</string>
+
+    <string name="filter_all">Все</string>
+    <string name="filter_user">Пользовательские</string>
+    <string name="filter_system">Системные</string>
+
+    <string name="action_refresh">Обновить</string>
+    <string name="action_kill_all">Закрыть все</string>
+    <string name="action_kill_selected">Закрыть выбранные</string>
+    <string name="action_kill_rules">По правилам</string>
+
+    <string name="memory_disk">Диск: %1$s</string>
+    <string name="memory_ram">RAM: %1$s</string>
+    <string name="memory_ram_none">—</string>
+    <string name="memory_line">%1$s • %2$s</string>
+    <string name="process_cached_suffix"> (кэш)</string>
+
+    <string name="policy_run_bg">Фон</string>
+    <string name="policy_bg_data">Данные</string>
+    <string name="policy_allowed">разрешено</string>
+    <string name="policy_blocked">запрещено</string>
+
+    <string name="shizuku_ok">Shizuku: подключён</string>
+    <string name="shizuku_no_perm">Shizuku: нет разрешения</string>
+    <string name="shizuku_down">Shizuku: не запущен</string>
+
+    <string name="settings_logging">Логирование</string>
+    <string name="settings_log_path">Путь к логу</string>
+    <string name="settings_shizuku_status">Статус Shizuku</string>
+    <string name="settings_open_shizuku">Открыть Shizuku</string>
+    <string name="settings_open_android">Настройки Android</string>
+    <string name="settings_android_hint">Специальные возможности, разрешения, параметры разработчика (ADB)</string>
+    <string name="settings_android_missing_title">com.android.settings не найден</string>
+    <string name="settings_android_missing_message">На устройстве нет приложения Android Settings (com.android.settings).\n\nОбычно оно уже в прошивке Quest. Если отсутствует — установите обёртку через SideQuest или adb:\n\n• XR Native Android Settings\n  https://anagan79.itch.io/xr-native-android-settings\n\n• Quest Hidden Settings\n  https://github.com/threethan/QuestHiddenSettings/releases</string>
+    <string name="settings_android_launch_failed">Не удалось открыть Android Settings</string>
+    <string name="settings_instructions_title">Инструкция</string>
+    <string name="settings_instructions">1. Включите Developer Mode на Quest.\n2. Установите и запустите Shizuku (pairing или USB).\n3. В Shizuku → Manage apps → разрешите Quest Task Manager.\n4. Вкладка «Запущенные» — закрытие процессов.\n5. Вкладка «Приложения» — права фона и интернета.\n6. Включите «Фоновая очистка» — тап по уведомлению закрывает apps с запрещённым фоном.\n\nЛицензия: MIT. Сторонние компоненты — см. README на GitHub.</string>
+
+    <string name="killed_count">Закрыто: %1$d</string>
+    <string name="loading">Загрузка…</string>
+    <string name="error_shizuku">Нужен Shizuku</string>
+    <string name="selected_count">Выбрано: %1$d</string>
+
+    <string name="settings_notification">Фоновая очистка (уведомление)</string>
+    <string name="notification_channel_name">QTaskMgr</string>
+    <string name="notification_channel_desc">Очистка apps с запрещённым фоном</string>
+    <string name="notification_title">QTaskMgr</string>
+    <string name="notification_idle">%1$s • тап</string>
+    <string name="notification_idle_with_last">%1$s • −%2$d</string>
+    <string name="notification_cleaning">%1$s • …</string>
+    <string name="notification_result_closed">%1$s • −%2$d</string>
+    <string name="notification_result_none">%1$s • ок</string>
+    <string name="notification_shizuku_error">%1$s • Shizuku?</string>
+</resources>

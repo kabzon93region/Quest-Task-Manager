@@ -1,0 +1,22 @@
+{
+  "kill_protected": [
+    "com.oculus.vrshell",
+    "com.oculus.systemux",
+    "com.oculus.os.vrlockscreen",
+    "com.meta.horizon",
+    "com.meta.environment.prod.stinson.launcher"
+  ],
+  "protected_prefixes": [
+    "com.oculus.",
+    "com.meta.",
+    "com.android.",
+    "com.google.android.",
+    "com.qualcomm.",
+    "com.facebook.",
+    "android",
+    "moe.shizuku."
+  ],
+  "always_show_as_user": [
+    "com.adilhanney.no_more_background"
+  ]
+}
