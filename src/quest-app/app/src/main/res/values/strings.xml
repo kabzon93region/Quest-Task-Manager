@@ -5,6 +5,9 @@
     <string name="tab_running">Запущенные</string>
     <string name="tab_apps">Приложения</string>
     <string name="tab_settings">Настройки</string>
+    <string name="tab_log">Лог</string>
+    <string name="log_empty">Лог пуст или логирование отключено</string>
+    <string name="log_refresh">Обновить</string>
 
     <string name="filter_all">Все</string>
     <string name="filter_user">Пользовательские</string>
@@ -43,6 +46,9 @@
     <string name="settings_instructions">1. Включите Developer Mode на Quest.\n2. Установите и запустите Shizuku (pairing или USB).\n3. В Shizuku → Manage apps → разрешите Quest Task Manager.\n4. Вкладка «Запущенные» — закрытие процессов.\n5. Вкладка «Приложения» — права фона и интернета.\n6. Включите «Фоновая очистка» — тап по уведомлению закрывает apps с запрещённым фоном.\n\nЛицензия: MIT. Сторонние компоненты — см. README на GitHub.</string>
 
     <string name="killed_count">Закрыто: %1$d</string>
+    <string name="killed_with_skipped">Закрыто: %1$d, защищённые: %2$d</string>
+    <string name="killed_with_failed">Закрыто: %1$d, не удалось: %2$d</string>
+    <string name="killed_mixed">Закрыто: %1$d, защищённые: %2$d, не удалось: %3$d</string>
     <string name="loading">Загрузка…</string>
     <string name="error_shizuku">Нужен Shizuku</string>
     <string name="selected_count">Выбрано: %1$d</string>

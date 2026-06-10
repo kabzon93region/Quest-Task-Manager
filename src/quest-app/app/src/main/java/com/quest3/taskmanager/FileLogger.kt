@@ -10,6 +10,11 @@ import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.CopyOnWriteArrayList
+
+fun interface LogListener {
+    fun onLineAppended(line: String)
+}
 
 object FileLogger {
     private const val TAG = "QTaskMgr"
@@ -21,6 +26,17 @@ object FileLogger {
     private var logPath = AppSettings.DEFAULT_LOG_PATH
     private var internalLogFile: File? = null
     private var inShizukuAppend = false
+    private val listeners = CopyOnWriteArrayList<LogListener>()
+
+    fun getReadableLogFile(): File? = internalLogFile
+
+    fun addLogListener(listener: LogListener) {
+        listeners.add(listener)
+    }
+
+    fun removeLogListener(listener: LogListener) {
+        listeners.remove(listener)
+    }
 
     fun configure(context: Context) {
         val prefs = AppSettings.prefs(context)
@@ -74,6 +90,17 @@ object FileLogger {
                 appendViaShizuku(line, logPath)
             } else if (!appendDirect(line, logPath)) {
                 appendViaShizuku(line, logPath)
+            }
+            notifyListeners(line)
+        }
+    }
+
+    private fun notifyListeners(line: String) {
+        for (listener in listeners) {
+            try {
+                listener.onLineAppended(line)
+            } catch (_: Exception) {
+                // ignore broken listener
             }
         }
     }

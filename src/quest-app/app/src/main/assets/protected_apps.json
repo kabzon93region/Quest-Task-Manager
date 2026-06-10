@@ -10,9 +10,13 @@
     "com.oculus.",
     "com.meta.",
     "com.android.",
+    "com.google.",
     "com.google.android.",
     "com.qualcomm.",
+    "com.qti.",
     "com.facebook.",
+    "org.chromium.",
+    "horizonos.",
     "android",
     "moe.shizuku."
   ],

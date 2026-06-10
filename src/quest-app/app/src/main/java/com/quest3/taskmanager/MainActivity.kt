@@ -9,6 +9,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.quest3.taskmanager.databinding.ActivityMainBinding
 import com.quest3.taskmanager.ui.AllAppsFragment
 import com.quest3.taskmanager.ui.RunningTasksFragment
+import com.quest3.taskmanager.ui.LogFragment
 import com.quest3.taskmanager.ui.SettingsFragment
 import rikka.shizuku.Shizuku
 
@@ -33,12 +34,13 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount() = 3
+            override fun getItemCount() = 4
             override fun createFragment(position: Int): Fragment = when (position) {
                 0 -> RunningTasksFragment()
                 1 -> AllAppsFragment()
                 2 -> SettingsFragment()
-                else -> SettingsFragment()
+                3 -> LogFragment()
+                else -> LogFragment()
             }
         }
 
@@ -46,7 +48,9 @@ class MainActivity : AppCompatActivity() {
             tab.text = when (position) {
                 0 -> getString(R.string.tab_running)
                 1 -> getString(R.string.tab_apps)
-                else -> getString(R.string.tab_settings)
+                2 -> getString(R.string.tab_settings)
+                3 -> getString(R.string.tab_log)
+                else -> getString(R.string.tab_log)
             }
         }.attach()
 

@@ -39,6 +39,10 @@ class ProtectedAppsPolicy(context: Context, ownPackage: String) {
     fun isSystemForFilter(packageName: String, appIsSystemFlag: Boolean): Boolean {
         if (alwaysShowAsUser.contains(packageName)) return false
         if (appIsSystemFlag) return true
+        return matchesProtectedPrefix(packageName)
+    }
+
+    fun matchesProtectedPrefix(packageName: String): Boolean {
         for (prefix in protectedPrefixes) {
             if (prefix.endsWith(".") && packageName.startsWith(prefix)) return true
             if (!prefix.endsWith(".") && packageName == prefix) return true

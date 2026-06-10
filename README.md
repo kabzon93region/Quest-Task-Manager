@@ -8,7 +8,7 @@
 |---|---|
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
-| **Версия** | 1.1.2 |
+| **Версия** | 1.1.5 |
 
 ## Возможности
 
@@ -17,6 +17,7 @@
 | **Запущенные** | Процессы (ps + meminfo), RAM/диск, фильтр user/system, закрытие (все / выбранные / по правилам / тап) |
 | **Приложения** | Список установленных apps, переключатели «Фон» и «Данные» (Android `appops` / `netpolicy`) |
 | **Настройки** | Shizuku, **Настройки Android** (`com.android.settings`), уведомление очистки, лог |
+| **Лог** | Просмотр файла лога в реальном времени |
 
 ## Требования
 
@@ -33,7 +34,7 @@
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
 
 ```powershell
-adb install -r dist\QTaskMgr-v1.1.2-release.apk
+adb install -r dist\QTaskMgr-v1.1.3-release.apk
 ```
 
 ## Быстрый старт

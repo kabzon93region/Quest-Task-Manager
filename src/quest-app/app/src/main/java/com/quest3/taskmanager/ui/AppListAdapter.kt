@@ -91,7 +91,12 @@ class AppListAdapter(
                 AppListMode.ALL_APPS -> {
                     binding.checkSelect.visibility = View.GONE
                     binding.policyControls.visibility = View.VISIBLE
-                    binding.root.setOnClickListener(null)
+                    val openDetails = View.OnClickListener { onItemClick(entry) }
+                    binding.label.setOnClickListener(openDetails)
+                    binding.packageName.setOnClickListener(openDetails)
+                    binding.icon.setOnClickListener(openDetails)
+                    binding.memory.setOnClickListener(openDetails)
+                    binding.root.setOnClickListener(openDetails)
                     suppressSwitch = true
                     binding.switchRunBg.isChecked = entry.runInBackgroundAllowed == true
                     binding.switchBgData.isChecked = entry.backgroundDataAllowed == true

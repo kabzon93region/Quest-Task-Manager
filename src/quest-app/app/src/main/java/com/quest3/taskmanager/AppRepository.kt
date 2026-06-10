@@ -3,6 +3,7 @@ package com.quest3.taskmanager
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Process
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -14,7 +15,14 @@ class AppRepository(private val context: Context) {
     suspend fun loadRunningEntries(): List<AppEntry> = withContext(Dispatchers.IO) {
         requireShizuku()
         val snapshot = RunningAppsProbe.collectRunningSnapshot()
+        val installed = installedPackageNames()
         val packages = snapshot.displayPackages
+            .filter { it in installed && RunningAppsProbe.isLikelyPackageName(it) }
+            .toSet()
+        FileLogger.d(
+            "running filter: raw=${snapshot.displayPackages.size} " +
+                "installed=${packages.size}"
+        )
         val disk = StorageProbe.loadDiskSizes(packages)
         buildEntries(
             packageNames = packages,
@@ -42,16 +50,22 @@ class AppRepository(private val context: Context) {
         )
     }
 
-    suspend fun killPackages(packages: Collection<String>): Int = withContext(Dispatchers.IO) {
+    suspend fun killPackages(packages: Collection<String>): KillResult = withContext(Dispatchers.IO) {
         var killed = 0
+        var skippedProtected = 0
+        var failed = 0
         for (pkg in orderedForKill(packages)) {
-            if (policy.isKillProtected(pkg) && pkg != ownPackage) continue
-            if (ShizukuShell.forceStop(pkg)) killed++
+            if (policy.isKillProtected(pkg) && pkg != ownPackage) {
+                skippedProtected++
+                FileLogger.w("kill skipped (protected): $pkg")
+                continue
+            }
+            if (ShizukuShell.forceStop(pkg)) killed++ else failed++
         }
-        killed
+        KillResult(killed, skippedProtected, failed)
     }
 
-    suspend fun killByRules(candidates: Collection<String>): Int = withContext(Dispatchers.IO) {
+    suspend fun killByRules(candidates: Collection<String>): KillResult = withContext(Dispatchers.IO) {
         val targets = candidates.filter {
             !policy.isKillProtected(it) && BackgroundPolicy.isRunInBackgroundBlocked(it)
         }
@@ -96,10 +110,7 @@ class AppRepository(private val context: Context) {
             val icon = pm.getApplicationIcon(appInfo)
             val processState = snapshot.processState(packageName)
             val ramKb = snapshot.ramMap.byPackage[packageName]
-            val isSystem = policy.isSystemForFilter(
-                packageName,
-                (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-            )
+            val isSystem = classifyIsSystem(packageName, appInfo)
 
             val runAllowed = if (includePolicies && policyCtx != null) {
                 !BackgroundPolicy.isRunInBackgroundBlocked(packageName)
@@ -121,9 +132,51 @@ class AppRepository(private val context: Context) {
                 icon = icon
             )
         } catch (_: PackageManager.NameNotFoundException) {
-            null
+            buildUnknownEntry(packageName, snapshot, disk)
         }
     }
+
+    private fun buildUnknownEntry(
+        packageName: String,
+        snapshot: RunningSnapshot,
+        disk: Map<String, Long>
+    ): AppEntry? {
+        if (!RunningAppsProbe.isLikelyPackageName(packageName)) return null
+        val processState = snapshot.processState(packageName)
+        val ramKb = snapshot.ramMap.byPackage[packageName]
+        return AppEntry(
+            packageName = packageName,
+            label = packageName,
+            isSystem = classifyIsSystem(packageName, null),
+            processState = processState,
+            diskSizeKb = disk[packageName],
+            ramUsageKb = if (processState != ProcessState.NONE) (ramKb ?: 0L) else null,
+            runInBackgroundAllowed = null,
+            backgroundDataAllowed = null,
+            icon = pm.getDefaultActivityIcon()
+        )
+    }
+
+    private fun classifyIsSystem(packageName: String, appInfo: ApplicationInfo?): Boolean {
+        val systemFlag = when {
+            appInfo != null -> isSystemApp(appInfo) || appInfo.uid < Process.FIRST_APPLICATION_UID
+            else -> try {
+                pm.getPackageUid(packageName, 0) < Process.FIRST_APPLICATION_UID
+            } catch (_: PackageManager.NameNotFoundException) {
+                false
+            }
+        }
+        return policy.isSystemForFilter(packageName, systemFlag)
+    }
+
+    private fun installedPackageNames(): Set<String> =
+        pm.getInstalledApplications(PackageManager.GET_META_DATA)
+            .map { it.packageName }
+            .toSet()
+
+    private fun isSystemApp(appInfo: ApplicationInfo): Boolean =
+        (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0 ||
+            (appInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
 
     private fun requireShizuku() {
         check(ShizukuShell.isAvailable() && ShizukuShell.hasPermission()) {

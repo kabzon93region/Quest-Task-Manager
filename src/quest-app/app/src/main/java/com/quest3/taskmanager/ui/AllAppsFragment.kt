@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.quest3.taskmanager.AndroidSettingsLauncher
 import com.quest3.taskmanager.AppEntry
 import com.quest3.taskmanager.AppFilter
 import com.quest3.taskmanager.AppRepository
@@ -38,7 +39,7 @@ class AllAppsFragment : Fragment() {
         repository = AppRepository(requireContext())
         adapter = AppListAdapter(
             mode = AppListMode.ALL_APPS,
-            onItemClick = {},
+            onItemClick = { entry -> openAppDetails(entry) },
             onSelectionChanged = {},
             onRunBgChanged = { entry, allowed -> setRunBg(entry, allowed) },
             onBgDataChanged = { entry, allowed -> setBgData(entry, allowed) }
@@ -53,6 +54,13 @@ class AllAppsFragment : Fragment() {
 
         filter = AppFilter.USER
         refresh()
+    }
+
+    private fun openAppDetails(entry: AppEntry) {
+        val ctx = requireContext()
+        if (!AndroidSettingsLauncher.openAppDetails(ctx, entry.packageName)) {
+            Toast.makeText(ctx, R.string.settings_android_launch_failed, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun applyFilter(f: AppFilter) {

@@ -25,7 +25,6 @@ object ShizukuShell {
             return ShellResult(-1, stdout, stderr.ifBlank { "timeout" })
         }
         val exit = process.exitValue()
-        // Только logcat — запись в FileLogger вызывала рекурсию через appendViaShizuku
         Log.d(TAG, "shell exit=$exit cmd=${command.take(100)}")
         return ShellResult(exit, stdout, stderr)
     }
@@ -51,12 +50,44 @@ object ShizukuShell {
     }
 
     fun forceStop(packageName: String): Boolean {
-        val safe = packageName.replace("'", "").replace(";", "")
+        val safe = sanitizePackage(packageName)
         if (safe.isBlank()) return false
-        val result = run("am force-stop '$safe'", timeoutSec = 8)
-        FileLogger.i("force-stop $safe exit=${result.exitCode}")
-        return result.exitCode == 0
+
+        run("am force-stop '$safe'", timeoutSec = 8)
+        run("am kill '$safe'", timeoutSec = 8)
+
+        val before = collectPids(safe)
+        for (pid in before) {
+            run("kill -9 $pid", timeoutSec = 3)
+        }
+
+        val after = collectPids(safe)
+        val ok = after.isEmpty()
+        FileLogger.i("force-stop $safe pids=${before.size} remaining=${after.size} ok=$ok")
+        return ok
     }
+
+    private fun collectPids(packageName: String): Set<Int> {
+        val pids = linkedSetOf<Int>()
+        val pidof = run("pidof '$packageName' 2>/dev/null").stdout.trim()
+        if (pidof.isNotBlank()) {
+            pidof.split(Regex("""\s+""")).mapNotNull { it.toIntOrNull() }.forEach { pids.add(it) }
+        }
+        val ps = run("ps -A -o PID,NAME").combined
+        for (line in ps.lineSequence()) {
+            val parts = line.trim().split(Regex("""\s+"""))
+            if (parts.size < 2) continue
+            val pid = parts[0].toIntOrNull() ?: continue
+            val name = RunningAppsProbe.normalizePackageName(parts[1])
+            if (name == packageName || parts[1].contains(packageName)) {
+                pids.add(pid)
+            }
+        }
+        return pids
+    }
+
+    private fun sanitizePackage(packageName: String): String =
+        packageName.replace("'", "").replace(";", "").trim()
 }
 
 data class ShellResult(

@@ -11,6 +11,7 @@
 
 | Документ | Описание |
 |----------|----------|
+| [RELEASE_NOTES_v1.1.3.md](RELEASE_NOTES_v1.1.3.md) | v1.1.3 — настройки, список, kill |
 | [RELEASE_NOTES_v1.1.2.md](RELEASE_NOTES_v1.1.2.md) | v1.1.2 — запуск и лог |
 | [RELEASE_NOTES_v1.1.1.md](RELEASE_NOTES_v1.1.1.md) | v1.1.1 — подпись APK |
 | [RELEASE_NOTES_v1.1.0.md](RELEASE_NOTES_v1.1.0.md) | v1.1.0 — первый релиз v1.1 |
@@ -28,4 +29,4 @@
 
 ## Версия документации
 
-Соответствует **QTaskMgr v1.1.2**.
+Соответствует **QTaskMgr v1.1.3**.

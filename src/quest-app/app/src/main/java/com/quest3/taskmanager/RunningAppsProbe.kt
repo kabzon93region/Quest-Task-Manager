@@ -4,31 +4,51 @@ data class RunningSnapshot(
     val psPackages: Set<String>,
     val ramMap: MemoryProbe.RamMap
 ) {
-    val activePackages: Set<String>
-        get() = ramMap.activePackages
-
     val displayPackages: Set<String>
-        get() = ramMap.activePackages + ramMap.cachedOnlyPackages
+        get() = (ramMap.byPackage.filter { (_, kb) -> kb > 0 }.keys +
+            psPackages +
+            ramMap.activePackages +
+            ramMap.cachedOnlyPackages)
+            .filter { RunningAppsProbe.isLikelyPackageName(it) }
+            .toSet()
 
     fun processState(pkg: String): ProcessState = when {
-        pkg in ramMap.activePackages -> ProcessState.ACTIVE
+        pkg in ramMap.activePackages || pkg in psPackages -> ProcessState.ACTIVE
         pkg in ramMap.cachedOnlyPackages -> ProcessState.CACHED
+        (ramMap.byPackage[pkg] ?: 0) > 0 -> ProcessState.CACHED
         else -> ProcessState.NONE
     }
 }
 
 object RunningAppsProbe {
+    private val processRecordPkg = Regex("""ProcessRecord\{[^}]*\s+\d+:\s*([a-z][a-z0-9_.]+)/""")
+    private val pkgFromPsArgs = Regex("""\b([a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]+)+)\b""")
+
     fun collectRunningSnapshot(): RunningSnapshot {
         val psPackages = collectPsPackages()
-        val ramMap = MemoryProbe.loadRamMap(psPackages)
-        FileLogger.d("running: ps=${psPackages.size} active=${ramMap.activePackages.size} cached=${ramMap.cachedOnlyPackages.size}")
-        return RunningSnapshot(psPackages, ramMap)
+        val dumpsysPackages = collectDumpsysProcessPackages()
+        val mergedPs = psPackages + dumpsysPackages
+        val ramMap = MemoryProbe.loadRamMap(mergedPs)
+        FileLogger.i(
+            "running: ps=${psPackages.size} dumpsys=${dumpsysPackages.size} " +
+                "ram=${ramMap.byPackage.size} display=${mergedPs.size + ramMap.cachedOnlyPackages.size}"
+        )
+        return RunningSnapshot(mergedPs, ramMap)
     }
 
     fun collectPsPackages(): Set<String> {
         val ps = ShizukuShell.run("ps -A -o NAME").combined
         if (ps.isBlank()) return emptySet()
         return parsePs(ps)
+    }
+
+    private fun collectDumpsysProcessPackages(): Set<String> {
+        val out = ShizukuShell.run("dumpsys activity processes", timeoutSec = 30).combined
+        if (out.isBlank()) return emptySet()
+        return processRecordPkg.findAll(out)
+            .map { normalizePackageName(it.groupValues[1]) }
+            .filter { isLikelyPackageName(it) }
+            .toSet()
     }
 
     internal fun normalizePackageName(name: String): String {
@@ -43,16 +63,44 @@ object RunningAppsProbe {
         return current
     }
 
-    private fun isLikelyPackageName(name: String): Boolean {
+    private val PACKAGE_ROOT_PREFIXES = listOf(
+        "com.", "org.", "net.", "io.", "ru.", "de.", "uk.", "jp.", "fr.",
+        "games.", "unity.", "su.", "mr.", "proton.", "dev.", "app.", "me.",
+    )
+
+    private val NATIVE_PROCESS_PREFIXES = listOf(
+        "android.", "media.", "hidl.", "vendor.", "system.", "webview",
+    )
+
+    internal fun isLikelyPackageName(name: String): Boolean {
         if (!name.contains('.')) return false
-        return name.split('.').all { s ->
+        if (name.contains('@') || name.contains(':')) return false
+        if (NATIVE_PROCESS_PREFIXES.any { name.startsWith(it) }) return false
+        if (!PACKAGE_ROOT_PREFIXES.any { name.startsWith(it) }) return false
+        val segments = name.split('.')
+        if (segments.size < 3) return false
+        return segments.all { s ->
             s.isNotEmpty() && s[0].isLowerCase() && s.all { c -> c.isLowerCase() || c.isDigit() || c == '_' }
         }
     }
 
-    private fun parsePs(text: String): Set<String> =
-        text.lineSequence().map { it.trim() }.filter { line ->
-            line.startsWith("com.") || line.startsWith("org.") || line.startsWith("ru.") ||
-                line.startsWith("su.") || line.startsWith("games.") || line.startsWith("proton.")
-        }.map { normalizePackageName(it) }.filter { isLikelyPackageName(it) }.toSet()
+    private fun parsePs(text: String): Set<String> {
+        val skip = setOf("sh", "shizuku", "shizuku_server", "[sh]", "logd", "lmkd", "servicemanager")
+        val result = linkedSetOf<String>()
+        for (line in text.lineSequence()) {
+            val trimmed = line.trim()
+            if (trimmed.isBlank() || trimmed.startsWith("NAME")) continue
+            val candidate = normalizePackageName(trimmed.split(Regex("""\s+""")).firstOrNull() ?: continue)
+            if (candidate in skip) continue
+            if (isLikelyPackageName(candidate)) {
+                result.add(candidate)
+                continue
+            }
+            pkgFromPsArgs.findAll(trimmed).forEach { match ->
+                val pkg = normalizePackageName(match.groupValues[1])
+                if (isLikelyPackageName(pkg) && pkg !in skip) result.add(pkg)
+            }
+        }
+        return result
+    }
 }

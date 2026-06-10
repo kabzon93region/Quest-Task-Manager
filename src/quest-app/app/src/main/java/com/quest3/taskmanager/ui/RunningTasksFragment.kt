@@ -8,9 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.quest3.taskmanager.AndroidSettingsLauncher
 import com.quest3.taskmanager.AppEntry
 import com.quest3.taskmanager.AppFilter
 import com.quest3.taskmanager.AppRepository
+import com.quest3.taskmanager.KillResult
 import com.quest3.taskmanager.R
 import com.quest3.taskmanager.ShizukuShell
 import com.quest3.taskmanager.databinding.FragmentRunningTasksBinding
@@ -35,7 +37,7 @@ class RunningTasksFragment : Fragment() {
         repository = AppRepository(requireContext())
         adapter = AppListAdapter(
             mode = AppListMode.RUNNING,
-            onItemClick = { entry -> killSingle(entry) },
+            onItemClick = { entry -> openAppDetails(entry) },
             onSelectionChanged = { selected ->
                 binding.statusText.text = getString(R.string.selected_count, selected.size)
             },
@@ -83,13 +85,19 @@ class RunningTasksFragment : Fragment() {
         }
     }
 
+    private fun openAppDetails(entry: AppEntry) {
+        val ctx = requireContext()
+        if (!AndroidSettingsLauncher.openAppDetails(ctx, entry.packageName)) {
+            Toast.makeText(ctx, R.string.settings_android_launch_failed, Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun killPackages(pkgs: Collection<String>) {
         if (pkgs.isEmpty()) return
         binding.progress.visibility = View.VISIBLE
         lifecycleScope.launch {
             try {
-                val n = repository.killPackages(pkgs)
-                Toast.makeText(requireContext(), getString(R.string.killed_count, n), Toast.LENGTH_SHORT).show()
+                showKillResult(repository.killPackages(pkgs))
                 adapter.clearSelection()
                 refresh()
             } finally {
@@ -98,20 +106,29 @@ class RunningTasksFragment : Fragment() {
         }
     }
 
+    private fun showKillResult(result: KillResult) {
+        val msg = when {
+            result.skippedProtected > 0 && result.failed > 0 ->
+                getString(R.string.killed_mixed, result.killed, result.skippedProtected, result.failed)
+            result.skippedProtected > 0 ->
+                getString(R.string.killed_with_skipped, result.killed, result.skippedProtected)
+            result.failed > 0 ->
+                getString(R.string.killed_with_failed, result.killed, result.failed)
+            else ->
+                getString(R.string.killed_count, result.killed)
+        }
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+    }
+
     private fun killAll() = killPackages(killableItems().map { it.packageName })
     private fun killSelected() = killPackages(adapter.getSelectedPackages())
-    private fun killSingle(entry: AppEntry) {
-        if (repository.isKillProtected(entry.packageName)) return
-        killPackages(listOf(entry.packageName))
-    }
 
     private fun killByRules() {
         binding.progress.visibility = View.VISIBLE
         lifecycleScope.launch {
             try {
                 val pkgs = killableItems().map { it.packageName }
-                val n = repository.killByRules(pkgs)
-                Toast.makeText(requireContext(), getString(R.string.killed_count, n), Toast.LENGTH_SHORT).show()
+                showKillResult(repository.killByRules(pkgs))
                 refresh()
             } finally {
                 binding.progress.visibility = View.GONE
