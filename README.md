@@ -8,7 +8,7 @@
 |---|---|
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
-| **Версия** | 1.4.0 ([схема версий](docs/VERSIONING.md)) |
+| **Версия** | 1.4.1 ([схема версий](docs/VERSIONING.md)) |
 | **GitHub** | [quest-task-manager](https://github.com/kabzon93region/quest-task-manager) |
 
 ## Возможности
@@ -17,7 +17,7 @@
 |---------|----------|
 | **Запущенные** | Процессы (ps + meminfo), RAM устройства и на карточке, фильтры Все / Пользовательские / Системные / **Демоны**, **поиск**, закрытие (все / выбранные / по правилам) |
 | **Приложения** | Список установленных apps, те же фильтры и поиск, переключатели «Фон» и «Данные» (`appops` / `netpolicy`) |
-| **Настройки** | Версия, GitHub, Shizuku, **Настройки Android**, уведомление очистки, лог |
+| **Настройки** | Версия, GitHub, **DonationAlerts**, Shizuku, **Настройки Android**, уведомление очистки, лог |
 | **Лог** | Просмотр файла лога в реальном времени |
 
 ## Требования
@@ -53,7 +53,7 @@
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
 
 ```powershell
-adb install -r dist\QTaskMgr-v1.4.0-release.apk
+adb install -r dist\QTaskMgr-v1.4.1-release.apk
 ```
 
 ## Быстрый старт
@@ -87,7 +87,8 @@ quest-task-manager/
 │   ├── THIRD_PARTY.md
 │   ├── GITHUB_PUBLISH.md
 │   ├── VERSIONING.md
-│   ├── RELEASE_NOTES_v1.4.0.md   # актуальный для GitHub Releases
+│   ├── RELEASE_NOTES_v1.4.1.md   # актуальный для GitHub Releases
+│   ├── RELEASE_NOTES_v1.4.0.md   # накопительный v1.2.14 → v1.4.0
 │   └── RELEASE_NOTES_v*.md
 ├── scripts/
 ├── src/quest-app/          # Android Gradle project
@@ -101,6 +102,16 @@ quest-task-manager/
 - [NOTICE](NOTICE) — краткая атрибуция для дистрибутивов
 
 Управление фоновыми правами использует те же публичные API Android, что и [No More Background](https://github.com/adil192/no_more_background); код NMB **не включён** и не является частью этого проекта.
+
+## Поддержать проект
+
+Разовый донат картой РФ, СБП, ЮMoney, VK Pay:
+
+**[DonationAlerts → kabzon93region](https://www.donationalerts.com/r/kabzon93region)**
+
+Та же ссылка — во вкладке **Настройки** в приложении.
+
+> Если ваш ник на DonationAlerts другой — замените `kabzon93region` в `strings.xml` (`settings_donationalerts_url`) и в этом README.
 
 ## Связанные проекты
 

@@ -41,6 +41,8 @@
     <string name="settings_version">Версия %1$s</string>
     <string name="settings_github">Страница на GitHub</string>
     <string name="settings_github_url">https://github.com/kabzon93region/quest-task-manager</string>
+    <string name="settings_donate">Поддержать (DonationAlerts)</string>
+    <string name="settings_donationalerts_url">https://www.donationalerts.com/r/kabzon93region</string>
     <string name="settings_shizuku_status">Статус Shizuku</string>
     <string name="settings_open_shizuku">Открыть Shizuku</string>
     <string name="settings_open_android">Настройки Android</string>

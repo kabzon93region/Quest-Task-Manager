@@ -82,9 +82,8 @@ class SettingsFragment : Fragment() {
         binding.btnOpenAndroidSettings.setOnClickListener { openAndroidSettings() }
 
         binding.appVersion.text = getString(R.string.settings_version, BuildConfig.VERSION_NAME)
-        binding.btnGithub.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.settings_github_url))))
-        }
+        binding.btnGithub.setOnClickListener { openUrl(R.string.settings_github_url) }
+        binding.btnDonate.setOnClickListener { openUrl(R.string.settings_donationalerts_url) }
 
         updateShizukuStatus()
     }
@@ -105,6 +104,10 @@ class SettingsFragment : Fragment() {
 
     private fun openAndroidSettings() {
         AndroidSettingsLauncher.openMainWithUi(requireContext())
+    }
+
+    private fun openUrl(urlResId: Int) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(urlResId))))
     }
 
     override fun onDestroyView() {

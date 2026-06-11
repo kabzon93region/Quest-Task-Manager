@@ -25,7 +25,7 @@ cd B:\quest3\PC\quest-task-manager
 .\scripts\build-apk.ps1 -Release
 ```
 
-Результат: `dist\QTaskMgr-v1.1.2-release.apk`
+Результат: `dist\QTaskMgr-v1.4.1-release.apk`
 
 Release подписывается debug-ключом (для SideQuest/adb). Без подписи Android выдаёт `INSTALL_PARSE_FAILED_NO_CERTIFICATES`.
 
@@ -76,19 +76,24 @@ git push -u origin main
 
 ## Часть 3. GitHub Release
 
-### v1.4.0 (текущий — накопительный после v1.2.14)
+### v1.4.1 (следующий — патч после v1.4.0)
 
 1. Репозиторий → **Releases** → **Draft a new release**
-2. **Tag:** `v1.4.0` (create new tag on `main`)
-3. **Title:** `Quest Task Manager v1.4.0`
-4. **Description** — скопировать из [RELEASE_NOTES_v1.4.0.md](RELEASE_NOTES_v1.4.0.md)
-5. Прикрепить: `dist\QTaskMgr-v1.4.0-release.apk`
+2. **Tag:** `v1.4.1` (create new tag on `main`)
+3. **Title:** `Quest Task Manager v1.4.1`
+4. **Description** — скопировать из [RELEASE_NOTES_v1.4.1.md](RELEASE_NOTES_v1.4.1.md)
+5. Прикрепить: `dist\QTaskMgr-v1.4.1-release.apk`
 6. **Set as the latest release** → **Publish release**
+
+### v1.4.0 (опубликован — накопительный после v1.2.14)
+
+Тег `v1.4.0`, описание: [RELEASE_NOTES_v1.4.0.md](RELEASE_NOTES_v1.4.0.md), asset `QTaskMgr-v1.4.0-release.apk`.
 
 ### Предыдущие релизы
 
 | Версия | Примечание |
 |--------|------------|
+| v1.4.0 | Накопительный релиз поколения 1.4 (после v1.2.14) |
 | v1.2.14 | Стабильный релиз поколения 1.2 (накопительный после v1.2.0) |
 | v1.2.0 | Вкладка «Лог» |
 | v1.1.x | Ранние публичные сборки |
@@ -112,7 +117,7 @@ git push -u origin main
 ### GitHub CLI
 
 ```powershell
-gh release create v1.4.0 dist\QTaskMgr-v1.4.0-release.apk --title "Quest Task Manager v1.4.0" --notes-file docs\RELEASE_NOTES_v1.4.0.md
+gh release create v1.4.1 dist\QTaskMgr-v1.4.1-release.apk --title "Quest Task Manager v1.4.1" --notes-file docs\RELEASE_NOTES_v1.4.1.md
 ```
 
 ---
