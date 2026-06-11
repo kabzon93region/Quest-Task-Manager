@@ -35,3 +35,6 @@ Thumbs.db
 .venv/
 __pycache__/
 *.pyc
+
+# Standalone fork helper (lives in B:\quest3\PC\, not in this repo)
+scripts/create-standalone-fork.ps1
