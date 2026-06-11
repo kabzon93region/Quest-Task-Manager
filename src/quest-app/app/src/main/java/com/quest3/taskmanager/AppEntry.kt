@@ -8,6 +8,7 @@ data class AppEntry(
     val packageName: String,
     val label: String,
     val isSystem: Boolean,
+    val isDaemon: Boolean = false,
     val processState: ProcessState,
     val diskSizeKb: Long?,
     val ramUsageKb: Long?,
@@ -18,12 +19,13 @@ data class AppEntry(
     val isRunning: Boolean get() = processState != ProcessState.NONE
 }
 
-enum class AppFilter { ALL, USER, SYSTEM }
+enum class AppFilter { ALL, USER, SYSTEM, DAEMON }
 
 fun AppEntry.matchesFilter(filter: AppFilter): Boolean = when (filter) {
-    AppFilter.ALL -> true
-    AppFilter.USER -> !isSystem
-    AppFilter.SYSTEM -> isSystem
+    AppFilter.ALL -> !isDaemon
+    AppFilter.USER -> !isSystem && !isDaemon
+    AppFilter.SYSTEM -> isSystem && !isDaemon
+    AppFilter.DAEMON -> isDaemon
 }
 
 object MemoryFormat {

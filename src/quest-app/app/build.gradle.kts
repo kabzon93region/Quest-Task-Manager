@@ -11,8 +11,8 @@ android {
         applicationId = "com.quest3.taskmanager"
         minSdk = 29
         targetSdk = 34
-        versionCode = 10214
-        versionName = "1.2.14"
+        versionCode = 10300
+        versionName = "1.3.0"
     }
 
     // Optional release signing: create keystore.properties (see docs/GITHUB_PUBLISH.md)

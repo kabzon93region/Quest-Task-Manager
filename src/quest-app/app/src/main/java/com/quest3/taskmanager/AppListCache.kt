@@ -37,6 +37,7 @@ object AppListCache {
                     .put("pkg", e.packageName)
                     .put("label", e.label)
                     .put("system", e.isSystem)
+                    .put("daemon", e.isDaemon)
                     .put("state", e.processState.name)
                     .put("disk", e.diskSizeKb ?: JSONObject.NULL)
                     .put("ram", e.ramUsageKb ?: JSONObject.NULL)
@@ -75,6 +76,7 @@ object AppListCache {
             packageName = pkg,
             label = getString("label"),
             isSystem = getBoolean("system"),
+            isDaemon = optBoolean("daemon", false),
             processState = ProcessState.valueOf(getString("state")),
             diskSizeKb = optLongOrNull("disk"),
             ramUsageKb = optLongOrNull("ram"),

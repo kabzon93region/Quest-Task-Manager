@@ -54,6 +54,7 @@ class RunningTasksFragment : Fragment() {
         binding.chipAll.setOnClickListener { applyFilter(AppFilter.ALL) }
         binding.chipUser.setOnClickListener { applyFilter(AppFilter.USER) }
         binding.chipSystem.setOnClickListener { applyFilter(AppFilter.SYSTEM) }
+        binding.chipDaemon.setOnClickListener { applyFilter(AppFilter.DAEMON) }
         binding.btnRefresh.setOnClickListener { refresh() }
         binding.btnKillAll.setOnClickListener { killAll() }
         binding.btnKillSelected.setOnClickListener { killSelected() }
@@ -84,10 +85,13 @@ class RunningTasksFragment : Fragment() {
         binding.chipAll.isChecked = f == AppFilter.ALL
         binding.chipUser.isChecked = f == AppFilter.USER
         binding.chipSystem.isChecked = f == AppFilter.SYSTEM
+        binding.chipDaemon.isChecked = f == AppFilter.DAEMON
     }
 
     private fun killableItems(): List<AppEntry> =
-        allItems.filter { !repository.isKillProtected(it.packageName) }
+        allItems
+            .filter { it.matchesFilter(filter) }
+            .filter { !repository.isKillProtected(it.packageName) }
 
     private fun applyFilter(f: AppFilter) {
         filter = f

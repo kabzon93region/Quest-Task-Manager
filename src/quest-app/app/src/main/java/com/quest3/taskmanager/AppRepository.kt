@@ -16,40 +16,54 @@ class AppRepository(private val context: Context) {
         requireShizuku()
         val snapshot = RunningAppsProbe.collectRunningSnapshot()
         val installed = installedPackageNames()
-        val raw = snapshot.psPackages + snapshot.ramMap.byPackage.filter { (_, kb) -> kb > 0 }.keys +
-            snapshot.ramMap.activePackages + snapshot.ramMap.cachedOnlyPackages
-        val packages = raw
+        val packages = snapshot.displayPackages
             .filter { it in installed && !RunningAppsProbe.isNativeProcessName(it) }
             .toSet()
+        val daemonNames = RunningAppsProbe.collectDaemonNames(snapshot, installed)
         FileLogger.d(
-            "running filter: raw=${raw.size} ps=${snapshot.psPackages.size} " +
-                "installed=${packages.size}"
+            "running filter: apps=${packages.size} daemons=${daemonNames.size}"
         )
         val disk = StorageProbe.loadDiskSizes(packages)
-        buildEntries(
+        val appEntries = buildEntries(
             packageNames = packages,
             snapshot = snapshot,
             disk = disk,
             includePolicies = false,
             policyCtx = null
         )
+        val daemonEntries = buildDaemonEntries(
+            names = daemonNames,
+            snapshot = snapshot,
+            includePolicies = false,
+            policyCtx = null
+        )
+        mergeSorted(appEntries, daemonEntries)
     }
 
     suspend fun loadAllEntries(): List<AppEntry> = withContext(Dispatchers.IO) {
         requireShizuku()
         val snapshot = RunningAppsProbe.collectRunningSnapshot()
+        val installed = installedPackageNames()
         val policyCtx = BackgroundPolicy.loadContext()
         val allPackages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
             .map { it.packageName }
             .toSet()
+        val daemonNames = RunningAppsProbe.collectDaemonNames(snapshot, installed)
         val disk = StorageProbe.loadDiskSizes(allPackages)
-        buildEntries(
+        val appEntries = buildEntries(
             packageNames = allPackages,
             snapshot = snapshot,
             disk = disk,
             includePolicies = true,
             policyCtx = policyCtx
         )
+        val daemonEntries = buildDaemonEntries(
+            names = daemonNames,
+            snapshot = snapshot,
+            includePolicies = true,
+            policyCtx = policyCtx
+        )
+        mergeSorted(appEntries, daemonEntries)
     }
 
     suspend fun killPackages(packages: Collection<String>): KillResult = withContext(Dispatchers.IO) {
@@ -62,7 +76,7 @@ class AppRepository(private val context: Context) {
                 FileLogger.w("kill skipped (protected): $pkg")
                 continue
             }
-            if (ShizukuShell.forceStop(pkg)) killed++ else failed++
+            if (ShizukuShell.killTarget(pkg)) killed++ else failed++
         }
         KillResult(killed, skippedProtected, failed)
     }
@@ -92,12 +106,25 @@ class AppRepository(private val context: Context) {
             .mapNotNull { pkg ->
                 toEntry(pkg, snapshot, disk, includePolicies, policyCtx)
             }
-            .sortedWith(
-                compareByDescending<AppEntry> { it.processState != ProcessState.NONE }
-                    .thenByDescending { it.ramUsageKb ?: 0 }
-                    .thenBy { it.label.lowercase() }
-            )
     }
+
+    private fun buildDaemonEntries(
+        names: Set<String>,
+        snapshot: RunningSnapshot,
+        includePolicies: Boolean,
+        policyCtx: PolicyContext?
+    ): List<AppEntry> {
+        return names.mapNotNull { name ->
+            toDaemonEntry(name, snapshot, includePolicies, policyCtx)
+        }
+    }
+
+    private fun mergeSorted(apps: List<AppEntry>, daemons: List<AppEntry>): List<AppEntry> =
+        (apps + daemons).sortedWith(
+            compareByDescending<AppEntry> { it.processState != ProcessState.NONE }
+                .thenByDescending { it.ramUsageKb ?: 0 }
+                .thenBy { it.label.lowercase() }
+        )
 
     private fun toEntry(
         packageName: String,
@@ -126,6 +153,7 @@ class AppRepository(private val context: Context) {
                 packageName = packageName,
                 label = label,
                 isSystem = isSystem,
+                isDaemon = false,
                 processState = processState,
                 diskSizeKb = disk[packageName],
                 ramUsageKb = if (processState != ProcessState.NONE) (ramKb ?: 0L) else null,
@@ -135,6 +163,54 @@ class AppRepository(private val context: Context) {
             )
         } catch (_: PackageManager.NameNotFoundException) {
             buildUnknownEntry(packageName, snapshot, disk)
+        }
+    }
+
+    private fun toDaemonEntry(
+        name: String,
+        snapshot: RunningSnapshot,
+        includePolicies: Boolean,
+        policyCtx: PolicyContext?
+    ): AppEntry? {
+        val processState = snapshot.daemonProcessState(name)
+        if (processState == ProcessState.NONE) return null
+        val ramKb = snapshot.extendedRam[name] ?: 0L
+        val appInfo = try {
+            pm.getApplicationInfo(name, 0)
+        } catch (_: PackageManager.NameNotFoundException) {
+            null
+        }
+        val label = appInfo?.let { pm.getApplicationLabel(it).toString() } ?: name
+        val icon = appInfo?.let { pm.getApplicationIcon(it) } ?: pm.getDefaultActivityIcon()
+        val policies = resolvePolicies(name, appInfo != null, includePolicies, policyCtx)
+
+        return AppEntry(
+            packageName = name,
+            label = label,
+            isSystem = true,
+            isDaemon = true,
+            processState = processState,
+            diskSizeKb = null,
+            ramUsageKb = ramKb,
+            runInBackgroundAllowed = policies.first,
+            backgroundDataAllowed = policies.second,
+            icon = icon
+        )
+    }
+
+    private fun resolvePolicies(
+        name: String,
+        hasAppInfo: Boolean,
+        includePolicies: Boolean,
+        policyCtx: PolicyContext?
+    ): Pair<Boolean?, Boolean?> {
+        if (!includePolicies || policyCtx == null) return null to null
+        if (!hasAppInfo && RunningAppsProbe.isNativeProcessName(name)) return null to null
+        return try {
+            !BackgroundPolicy.isRunInBackgroundBlocked(name) to
+                !BackgroundPolicy.isBackgroundDataBlocked(name, policyCtx)
+        } catch (_: Exception) {
+            null to null
         }
     }
 
@@ -150,6 +226,7 @@ class AppRepository(private val context: Context) {
             packageName = packageName,
             label = packageName,
             isSystem = classifyIsSystem(packageName, null),
+            isDaemon = false,
             processState = processState,
             diskSizeKb = disk[packageName],
             ramUsageKb = if (processState != ProcessState.NONE) (ramKb ?: 0L) else null,

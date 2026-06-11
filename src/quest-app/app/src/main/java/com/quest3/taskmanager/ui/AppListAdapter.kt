@@ -93,16 +93,24 @@ class AppListAdapter(
                 }
                 AppListMode.ALL_APPS -> {
                     binding.checkSelect.visibility = View.GONE
-                    binding.policyControls.visibility = View.VISIBLE
-                    suppressSwitch = true
-                    binding.switchRunBg.isChecked = entry.runInBackgroundAllowed == true
-                    binding.switchBgData.isChecked = entry.backgroundDataAllowed == true
-                    suppressSwitch = false
-                    binding.switchRunBg.setOnCheckedChangeListener { _, checked ->
-                        if (!suppressSwitch) onRunBgChanged(entry, checked)
-                    }
-                    binding.switchBgData.setOnCheckedChangeListener { _, checked ->
-                        if (!suppressSwitch) onBgDataChanged(entry, checked)
+                    val showPolicy = !entry.isDaemon ||
+                        entry.runInBackgroundAllowed != null ||
+                        entry.backgroundDataAllowed != null
+                    binding.policyControls.visibility = if (showPolicy) View.VISIBLE else View.GONE
+                    if (showPolicy) {
+                        suppressSwitch = true
+                        binding.switchRunBg.isChecked = entry.runInBackgroundAllowed == true
+                        binding.switchBgData.isChecked = entry.backgroundDataAllowed == true
+                        suppressSwitch = false
+                        binding.switchRunBg.setOnCheckedChangeListener { _, checked ->
+                            if (!suppressSwitch) onRunBgChanged(entry, checked)
+                        }
+                        binding.switchBgData.setOnCheckedChangeListener { _, checked ->
+                            if (!suppressSwitch) onBgDataChanged(entry, checked)
+                        }
+                    } else {
+                        binding.switchRunBg.setOnCheckedChangeListener(null)
+                        binding.switchBgData.setOnCheckedChangeListener(null)
                     }
                 }
             }

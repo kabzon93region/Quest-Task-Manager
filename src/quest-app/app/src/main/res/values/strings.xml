@@ -12,6 +12,7 @@
     <string name="filter_all">Все</string>
     <string name="filter_user">Пользовательские</string>
     <string name="filter_system">Системные</string>
+    <string name="filter_daemon">Демоны</string>
 
     <string name="action_refresh">Обновить</string>
     <string name="action_kill_all">Закрыть все</string>

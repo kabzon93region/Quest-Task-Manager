@@ -89,7 +89,6 @@ object ShizukuShell {
         return try {
             val stop = run("am force-stop '$safe'", timeoutSec = 8)
             run("am kill '$safe'", timeoutSec = 5)
-            // am force-stop достаточно; не учитываем фоновые *.$package.service.* в ps
             val ok = stop.exitCode == 0
             FileLogger.i("force-stop $safe exit=${stop.exitCode} ok=$ok")
             ok
@@ -97,6 +96,49 @@ object ShizukuShell {
             FileLogger.e("force-stop failed: $safe", e)
             false
         }
+    }
+
+    /** Завершение приложения или нативного демона. */
+    fun killTarget(processName: String): Boolean {
+        val safe = sanitizePackage(processName)
+        if (safe.isBlank()) return false
+        if (!RunningAppsProbe.isNativeProcessName(safe) && RunningAppsProbe.isLikelyPackageName(safe)) {
+            if (forceStop(safe)) return true
+        }
+        return killByProcessName(safe)
+    }
+
+    private fun killByProcessName(name: String): Boolean {
+        val pids = findPids(name)
+        if (pids.isEmpty()) {
+            FileLogger.w("kill: no pids for $name")
+            return false
+        }
+        var any = false
+        for (pid in pids) {
+            val result = run("kill -9 $pid", timeoutSec = 5)
+            if (result.exitCode == 0) any = true
+        }
+        FileLogger.i("kill -9 $name pids=$pids ok=$any")
+        return any
+    }
+
+    private fun findPids(processName: String): List<Int> {
+        val out = run("ps -A -o PID,NAME", timeoutSec = 10).combined
+        val pids = mutableListOf<Int>()
+        for (line in out.lineSequence()) {
+            val trimmed = line.trim()
+            if (trimmed.isBlank() || trimmed.startsWith("PID")) continue
+            val parts = trimmed.split(Regex("""\s+"""))
+            if (parts.size < 2) continue
+            val pid = parts[0].toIntOrNull() ?: continue
+            val rawName = parts[1]
+            val normalized = RunningAppsProbe.normalizePackageName(rawName)
+            if (normalized == processName || rawName == processName) {
+                pids.add(pid)
+            }
+        }
+        return pids.distinct()
     }
 
     private fun sanitizePackage(packageName: String): String =

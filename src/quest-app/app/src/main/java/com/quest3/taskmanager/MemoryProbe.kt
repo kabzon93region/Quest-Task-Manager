@@ -91,4 +91,44 @@ object MemoryProbe {
         }
         return result
     }
+
+    /** RAM по всем именам процессов (включая нативные демоны). */
+    fun loadExtendedProcessRam(): Map<String, Long> {
+        val result = mutableMapOf<String, Long>()
+        ShizukuShell.run("ps -A -o NAME,RSS").combined.lines().forEach { line ->
+            val parts = line.trim().split(Regex("""\s+"""))
+            if (parts.size < 2) return@forEach
+            val name = RunningAppsProbe.normalizePackageName(parts[0])
+            if (name.isBlank()) return@forEach
+            val rss = parts.last().toLongOrNull() ?: return@forEach
+            result[name] = (result[name] ?: 0) + rss
+        }
+        val meminfo = ShizukuShell.run("dumpsys meminfo", timeoutSec = 45).combined
+        parseMeminfoSummaryAll(meminfo).forEach { (name, kb) ->
+            result[name] = maxOf(result[name] ?: 0, kb)
+        }
+        return result
+    }
+
+    private fun parseMeminfoSummaryAll(output: String): Map<String, Long> {
+        val result = mutableMapOf<String, Long>()
+        var inSummary = false
+        for (line in output.lines()) {
+            val trimmed = line.trim()
+            if (trimmed.startsWith("Total PSS by process")) {
+                inSummary = true
+                continue
+            }
+            if (inSummary) {
+                if (trimmed.isBlank() || trimmed.startsWith("Total PSS by OOM")) break
+                val match = summaryPssRegex.find(trimmed) ?: continue
+                val kb = match.groupValues[1].replace(",", "").toLongOrNull() ?: continue
+                val name = RunningAppsProbe.normalizePackageName(match.groupValues[2])
+                if (name.isNotBlank()) {
+                    result[name] = (result[name] ?: 0) + kb
+                }
+            }
+        }
+        return result
+    }
 }
