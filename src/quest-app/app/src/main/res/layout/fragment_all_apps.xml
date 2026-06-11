@@ -51,6 +51,23 @@
                 android:text="@string/filter_daemon" />
         </com.google.android.material.chip.ChipGroup>
 
+        <EditText
+            android:id="@+id/editSearch"
+            android:layout_width="56dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/bg_surface"
+            android:hint="@string/search_hint"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text"
+            android:maxLength="7"
+            android:paddingHorizontal="6dp"
+            android:singleLine="true"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
+            android:textSize="12sp" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRefresh"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -60,17 +77,19 @@
             android:textColor="@color/accent_cyan" />
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1" />
-
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
 </LinearLayout>

@@ -1,34 +1,59 @@
 package com.quest3.taskmanager
 
 import android.content.Context
+import android.content.pm.PackageManager
+import kotlinx.coroutines.runBlocking
 
 class RulesCleanup(private val context: Context) {
+    private val pm = context.packageManager
+
     fun run(): CleanResult {
         FileLogger.i("=== rules cleanup start ===")
         val repository = AppRepository(context)
-        val policy = ProtectedAppsPolicy(context, context.packageName)
         val snapshot = RunningAppsProbe.collectRunningSnapshot()
-        val candidates = snapshot.displayPackages.filter { !policy.isKillProtected(it) }
+        val installed = installedPackageNames()
+        val candidates = collectRunningInstalled(snapshot, installed)
 
-        val toKill = candidates.filter { BackgroundPolicy.isRunInBackgroundBlocked(it) }
-        val skipped = candidates.size - toKill.size
+        val blocked = candidates.filter { BackgroundPolicy.isRunInBackgroundBlocked(it) }
+        FileLogger.i(
+            "cleanup: running=${candidates.size} blocked=${blocked.size}" +
+                if (blocked.isEmpty()) "" else " targets=${blocked.take(15).joinToString()}"
+        )
 
-        var killed = 0
-        for (pkg in repository.orderedForKill(toKill)) {
-            if (ShizukuShell.forceStop(pkg)) {
-                killed++
-                FileLogger.i("killed: $pkg")
-            }
+        val result = runBlocking {
+            repository.killByRules(candidates)
         }
 
-        FileLogger.i("=== rules cleanup done killed=$killed candidates=${toKill.size} ===")
+        FileLogger.i(
+            "=== rules cleanup done killed=${result.killed} " +
+                "failed=${result.failed} skipped=${result.skippedProtected} ==="
+        )
         return CleanResult(
             scannedCount = candidates.size,
-            targetCount = toKill.size,
-            killedCount = killed,
-            skippedAllowedCount = skipped
+            targetCount = blocked.size,
+            killedCount = result.killed,
+            skippedAllowedCount = candidates.size - blocked.size
         )
     }
+
+    private fun installedPackageNames(): Set<String> =
+        pm.getInstalledApplications(PackageManager.GET_META_DATA)
+            .map { it.packageName }
+            .toSet()
+
+    /** Все установленные процессы из ps/meminfo — как при ручном «По правилам» на вкладке «Запущенные». */
+    private fun collectRunningInstalled(snapshot: RunningSnapshot, installed: Set<String>): Set<String> =
+        (snapshot.displayPackages +
+            snapshot.psActiveNames +
+            snapshot.ramMap.byPackage.keys +
+            snapshot.ramMap.cachedOnlyPackages +
+            snapshot.ramMap.activePackages)
+            .filter { pkg ->
+                pkg in installed &&
+                    !RunningAppsProbe.isNativeProcessName(pkg) &&
+                    RunningAppsProbe.isLikelyPackageName(pkg)
+            }
+            .toSet()
 }
 
 data class CleanResult(

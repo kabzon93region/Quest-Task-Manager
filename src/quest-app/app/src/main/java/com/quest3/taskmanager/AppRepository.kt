@@ -71,9 +71,9 @@ class AppRepository(private val context: Context) {
         var skippedProtected = 0
         var failed = 0
         for (pkg in orderedForKill(packages)) {
-            if (policy.isKillProtected(pkg) && pkg != ownPackage) {
+            if (pkg == ownPackage) {
                 skippedProtected++
-                FileLogger.w("kill skipped (protected): $pkg")
+                FileLogger.w("kill skipped (self): $pkg")
                 continue
             }
             if (ShizukuShell.killTarget(pkg)) killed++ else failed++
@@ -83,7 +83,7 @@ class AppRepository(private val context: Context) {
 
     suspend fun killByRules(candidates: Collection<String>): KillResult = withContext(Dispatchers.IO) {
         val targets = candidates.filter {
-            !policy.isKillProtected(it) && BackgroundPolicy.isRunInBackgroundBlocked(it)
+            it != ownPackage && BackgroundPolicy.isRunInBackgroundBlocked(it)
         }
         killPackages(targets)
     }

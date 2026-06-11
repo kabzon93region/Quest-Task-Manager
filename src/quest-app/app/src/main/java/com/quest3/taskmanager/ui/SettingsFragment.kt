@@ -1,7 +1,9 @@
 package com.quest3.taskmanager.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +15,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import com.quest3.taskmanager.AndroidSettingsLauncher
 import com.quest3.taskmanager.AppSettings
+import com.quest3.taskmanager.BuildConfig
 import com.quest3.taskmanager.CleanupForegroundService
 import com.quest3.taskmanager.FileLogger
 import com.quest3.taskmanager.R
@@ -77,6 +80,11 @@ class SettingsFragment : Fragment() {
         }
 
         binding.btnOpenAndroidSettings.setOnClickListener { openAndroidSettings() }
+
+        binding.appVersion.text = getString(R.string.settings_version, BuildConfig.VERSION_NAME)
+        binding.btnGithub.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.settings_github_url))))
+        }
 
         updateShizukuStatus()
     }

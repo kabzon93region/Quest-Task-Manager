@@ -74,7 +74,11 @@ class CleanupForegroundService : Service() {
             }
             mainHandler.post {
                 val text = if (killed > 0) {
-                    ramText(R.string.notification_result_closed, killed)
+                    getString(
+                        R.string.notification_result_closed,
+                        ramLabel(),
+                        getString(R.string.killed_count, killed)
+                    )
                 } else {
                     ramText(R.string.notification_result_none)
                 }
@@ -97,8 +101,15 @@ class CleanupForegroundService : Service() {
     }
 
     private fun idleText(): String =
-        if (lastKilledCount > 0) ramText(R.string.notification_idle_with_last, lastKilledCount)
-        else ramText(R.string.notification_idle)
+        if (lastKilledCount > 0) {
+            getString(
+                R.string.notification_result_closed,
+                ramLabel(),
+                getString(R.string.killed_count, lastKilledCount)
+            )
+        } else {
+            ramText(R.string.notification_idle)
+        }
 
     private fun showIdleNotification(): Notification =
         buildNotification(getString(R.string.notification_title), idleText(), true)

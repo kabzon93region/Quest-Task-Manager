@@ -13,6 +13,7 @@
     <string name="filter_user">Пользовательские</string>
     <string name="filter_system">Системные</string>
     <string name="filter_daemon">Демоны</string>
+    <string name="search_hint">Поиск</string>
 
     <string name="action_refresh">Обновить</string>
     <string name="action_kill_all">Закрыть все</string>
@@ -37,6 +38,9 @@
 
     <string name="settings_logging">Логирование</string>
     <string name="settings_log_path">Путь к логу</string>
+    <string name="settings_version">Версия %1$s</string>
+    <string name="settings_github">Страница на GitHub</string>
+    <string name="settings_github_url">https://github.com/kabzon93region/quest-task-manager</string>
     <string name="settings_shizuku_status">Статус Shizuku</string>
     <string name="settings_open_shizuku">Открыть Shizuku</string>
     <string name="settings_open_android">Настройки Android</string>
@@ -50,6 +54,7 @@
 
     <string name="killed_count">Закрыто: %1$d</string>
     <string name="killed_with_skipped">Закрыто: %1$d, защищённые: %2$d</string>
+    <string name="killed_with_self_skipped">Закрыто: %1$d (своё приложение пропущено)</string>
     <string name="killed_with_failed">Закрыто: %1$d, не удалось: %2$d</string>
     <string name="killed_mixed">Закрыто: %1$d, защищённые: %2$d, не удалось: %3$d</string>
     <string name="loading">Загрузка…</string>
@@ -63,7 +68,7 @@
     <string name="notification_idle">%1$s • тап</string>
     <string name="notification_idle_with_last">%1$s • −%2$d</string>
     <string name="notification_cleaning">%1$s • …</string>
-    <string name="notification_result_closed">%1$s • −%2$d</string>
+    <string name="notification_result_closed">%1$s • %2$s</string>
     <string name="notification_result_none">%1$s • ок</string>
     <string name="notification_shizuku_error">%1$s • Shizuku?</string>
 </resources>

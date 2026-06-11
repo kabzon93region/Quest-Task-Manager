@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,7 @@ import com.quest3.taskmanager.PolicyContext
 import com.quest3.taskmanager.R
 import com.quest3.taskmanager.ShizukuShell
 import com.quest3.taskmanager.databinding.FragmentAllAppsBinding
-import com.quest3.taskmanager.matchesFilter
+import com.quest3.taskmanager.filtered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,7 +31,9 @@ class AllAppsFragment : Fragment() {
     private lateinit var adapter: AppListAdapter
     private var allItems = listOf<AppEntry>()
     private var filter = AppFilter.USER
+    private var searchQuery = ""
     private var policyCtx: PolicyContext? = null
+    private lateinit var loading: LoadTracker
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAllAppsBinding.inflate(inflater, container, false)
@@ -39,6 +42,10 @@ class AllAppsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loading = LoadTracker { active ->
+            if (_binding == null) return@LoadTracker
+            binding.progress.visibility = if (active) View.VISIBLE else View.GONE
+        }
         repository = AppRepository(requireContext())
         adapter = AppListAdapter(
             mode = AppListMode.ALL_APPS,
@@ -54,6 +61,10 @@ class AllAppsFragment : Fragment() {
         binding.chipUser.setOnClickListener { applyFilter(AppFilter.USER) }
         binding.chipSystem.setOnClickListener { applyFilter(AppFilter.SYSTEM) }
         binding.chipDaemon.setOnClickListener { applyFilter(AppFilter.DAEMON) }
+        binding.editSearch.doAfterTextChanged { text ->
+            searchQuery = text?.toString().orEmpty()
+            submitFilteredList()
+        }
         binding.btnRefresh.setOnClickListener { refresh() }
 
         filter = AppFilter.USER
@@ -61,13 +72,12 @@ class AllAppsFragment : Fragment() {
     }
 
     fun setLoading(visible: Boolean) {
-        if (_binding == null) return
-        binding.progress.visibility = if (visible) View.VISIBLE else View.GONE
+        if (visible) loading.begin() else loading.end()
     }
 
     fun displayEntries(items: List<AppEntry>) {
         allItems = items
-        applyFilter(filter)
+        submitFilteredList()
     }
 
     private fun updateFilterChips(f: AppFilter) {
@@ -84,7 +94,11 @@ class AllAppsFragment : Fragment() {
     private fun applyFilter(f: AppFilter) {
         filter = f
         updateFilterChips(f)
-        adapter.submitList(allItems.filter { it.matchesFilter(filter) })
+        submitFilteredList()
+    }
+
+    private fun submitFilteredList() {
+        adapter.submitList(allItems.filtered(filter, searchQuery))
     }
 
     fun refresh() {
@@ -92,7 +106,7 @@ class AllAppsFragment : Fragment() {
             Toast.makeText(requireContext(), R.string.error_shizuku, Toast.LENGTH_SHORT).show()
             return
         }
-        setLoading(true)
+        loading.begin()
         lifecycleScope.launch {
             try {
                 val items = withContext(Dispatchers.IO) {
@@ -100,14 +114,14 @@ class AllAppsFragment : Fragment() {
                     repository.loadAllEntries()
                 }
                 allItems = items
-                applyFilter(filter)
+                submitFilteredList()
                 withContext(Dispatchers.IO) {
                     AppListCache.saveAllApps(requireContext(), items)
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), e.message ?: "Error", Toast.LENGTH_SHORT).show()
             } finally {
-                setLoading(false)
+                loading.end()
             }
         }
     }
@@ -155,4 +169,3 @@ class AllAppsFragment : Fragment() {
         _binding = null
     }
 }
-

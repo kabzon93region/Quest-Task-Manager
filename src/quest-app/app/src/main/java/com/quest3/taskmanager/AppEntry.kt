@@ -28,6 +28,15 @@ fun AppEntry.matchesFilter(filter: AppFilter): Boolean = when (filter) {
     AppFilter.DAEMON -> isDaemon
 }
 
+fun AppEntry.matchesSearch(query: String): Boolean {
+    val q = query.trim().lowercase()
+    if (q.isEmpty()) return true
+    return label.lowercase().contains(q) || packageName.lowercase().contains(q)
+}
+
+fun List<AppEntry>.filtered(filter: AppFilter, search: String): List<AppEntry> =
+    filter { it.matchesFilter(filter) && it.matchesSearch(search) }
+
 object MemoryFormat {
     fun formatKb(kb: Long?): String {
         if (kb == null || kb <= 0) return "—"

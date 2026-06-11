@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,7 @@ import com.quest3.taskmanager.R
 import com.quest3.taskmanager.RamInfo
 import com.quest3.taskmanager.ShizukuShell
 import com.quest3.taskmanager.databinding.FragmentRunningTasksBinding
-import com.quest3.taskmanager.matchesFilter
+import com.quest3.taskmanager.filtered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,6 +31,8 @@ class RunningTasksFragment : Fragment() {
     private lateinit var adapter: AppListAdapter
     private var allItems = listOf<AppEntry>()
     private var filter = AppFilter.USER
+    private var searchQuery = ""
+    private lateinit var loading: LoadTracker
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRunningTasksBinding.inflate(inflater, container, false)
@@ -38,6 +41,10 @@ class RunningTasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loading = LoadTracker { active ->
+            if (_binding == null) return@LoadTracker
+            binding.progress.visibility = if (active) View.VISIBLE else View.GONE
+        }
         repository = AppRepository(requireContext())
         adapter = AppListAdapter(
             mode = AppListMode.RUNNING,
@@ -55,6 +62,10 @@ class RunningTasksFragment : Fragment() {
         binding.chipUser.setOnClickListener { applyFilter(AppFilter.USER) }
         binding.chipSystem.setOnClickListener { applyFilter(AppFilter.SYSTEM) }
         binding.chipDaemon.setOnClickListener { applyFilter(AppFilter.DAEMON) }
+        binding.editSearch.doAfterTextChanged { text ->
+            searchQuery = text?.toString().orEmpty()
+            submitFilteredList()
+        }
         binding.btnRefresh.setOnClickListener { refresh() }
         binding.btnKillAll.setOnClickListener { killAll() }
         binding.btnKillSelected.setOnClickListener { killSelected() }
@@ -65,13 +76,12 @@ class RunningTasksFragment : Fragment() {
     }
 
     fun setLoading(visible: Boolean) {
-        if (_binding == null) return
-        binding.progress.visibility = if (visible) View.VISIBLE else View.GONE
+        if (visible) loading.begin() else loading.end()
     }
 
     fun displayEntries(items: List<AppEntry>) {
         allItems = items
-        applyFilter(filter)
+        submitFilteredList()
         updateRamSummary()
     }
 
@@ -88,15 +98,17 @@ class RunningTasksFragment : Fragment() {
         binding.chipDaemon.isChecked = f == AppFilter.DAEMON
     }
 
-    private fun killableItems(): List<AppEntry> =
-        allItems
-            .filter { it.matchesFilter(filter) }
-            .filter { !repository.isKillProtected(it.packageName) }
+    /** Все приложения списка (без демонов) — для kill, независимо от фильтра отображения. */
+    private fun allAppItems(): List<AppEntry> = allItems.filter { !it.isDaemon }
 
     private fun applyFilter(f: AppFilter) {
         filter = f
         updateFilterChips(f)
-        adapter.submitList(allItems.filter { it.matchesFilter(filter) })
+        submitFilteredList()
+    }
+
+    private fun submitFilteredList() {
+        adapter.submitList(allItems.filtered(filter, searchQuery))
     }
 
     fun refresh() {
@@ -104,21 +116,25 @@ class RunningTasksFragment : Fragment() {
             Toast.makeText(requireContext(), R.string.error_shizuku, Toast.LENGTH_SHORT).show()
             return
         }
-        setLoading(true)
+        loading.begin()
         lifecycleScope.launch {
             try {
-                val items = withContext(Dispatchers.IO) {
-                    repository.loadRunningEntries()
-                }
-                displayEntries(items)
-                withContext(Dispatchers.IO) {
-                    AppListCache.saveRunning(requireContext(), items)
-                }
+                refreshInternal()
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), e.message ?: "Error", Toast.LENGTH_SHORT).show()
             } finally {
-                setLoading(false)
+                loading.end()
             }
+        }
+    }
+
+    private suspend fun refreshInternal() {
+        val items = withContext(Dispatchers.IO) {
+            repository.loadRunningEntries()
+        }
+        displayEntries(items)
+        withContext(Dispatchers.IO) {
+            AppListCache.saveRunning(requireContext(), items)
         }
     }
 
@@ -128,14 +144,16 @@ class RunningTasksFragment : Fragment() {
 
     private fun killPackages(pkgs: Collection<String>) {
         if (pkgs.isEmpty()) return
-        setLoading(true)
+        loading.begin()
         lifecycleScope.launch {
             try {
                 showKillResult(repository.killPackages(pkgs))
                 adapter.clearSelection()
-                refresh()
+                refreshInternal()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message ?: "Error", Toast.LENGTH_SHORT).show()
             } finally {
-                setLoading(false)
+                loading.end()
             }
         }
     }
@@ -145,7 +163,7 @@ class RunningTasksFragment : Fragment() {
             result.skippedProtected > 0 && result.failed > 0 ->
                 getString(R.string.killed_mixed, result.killed, result.skippedProtected, result.failed)
             result.skippedProtected > 0 ->
-                getString(R.string.killed_with_skipped, result.killed, result.skippedProtected)
+                getString(R.string.killed_with_self_skipped, result.killed)
             result.failed > 0 ->
                 getString(R.string.killed_with_failed, result.killed, result.failed)
             else ->
@@ -154,18 +172,20 @@ class RunningTasksFragment : Fragment() {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
     }
 
-    private fun killAll() = killPackages(killableItems().map { it.packageName })
+    private fun killAll() = killPackages(allAppItems().map { it.packageName })
     private fun killSelected() = killPackages(adapter.getSelectedPackages())
 
     private fun killByRules() {
-        setLoading(true)
+        loading.begin()
         lifecycleScope.launch {
             try {
-                val pkgs = killableItems().map { it.packageName }
+                val pkgs = allAppItems().map { it.packageName }
                 showKillResult(repository.killByRules(pkgs))
-                refresh()
+                refreshInternal()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message ?: "Error", Toast.LENGTH_SHORT).show()
             } finally {
-                setLoading(false)
+                loading.end()
             }
         }
     }
@@ -175,4 +195,3 @@ class RunningTasksFragment : Fragment() {
         _binding = null
     }
 }
-
