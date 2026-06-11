@@ -21,6 +21,7 @@
     <string name="memory_disk">Диск: %1$s</string>
     <string name="memory_ram">RAM: %1$s</string>
     <string name="memory_ram_none">—</string>
+    <string name="running_ram_summary">RAM %1$s</string>
     <string name="memory_line">%1$s • %2$s</string>
     <string name="process_cached_suffix"> (кэш)</string>
 

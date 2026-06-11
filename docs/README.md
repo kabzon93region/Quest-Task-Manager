@@ -12,6 +12,7 @@
 | Документ | Описание |
 |----------|----------|
 | [VERSIONING.md](VERSIONING.md) | Схема X.Y.Z |
+| [RELEASE_NOTES_v1.2.14.md](RELEASE_NOTES_v1.2.14.md) | v1.2.14 — RAM на вкладке «Запущенные» |
 | [RELEASE_NOTES_v1.2.13.md](RELEASE_NOTES_v1.2.13.md) | v1.2.13 — вкладки по готовности |
 | [RELEASE_NOTES_v1.2.12.md](RELEASE_NOTES_v1.2.12.md) | v1.2.12 — кэш, параллельный старт |
 | [RELEASE_NOTES_v1.2.11.md](RELEASE_NOTES_v1.2.11.md) | v1.2.11 — preload списков |

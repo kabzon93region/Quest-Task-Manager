@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_primary"
@@ -43,6 +44,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/filter_system" />
         </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/ramSummary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:gravity="end"
+            android:textColor="@color/accent_cyan"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:text="2.1/5.8 GB"
+            tools:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRefresh"
