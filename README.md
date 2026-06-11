@@ -1,6 +1,12 @@
 # Quest Task Manager (QTaskMgr)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/kabzon93region/quest-task-manager?label=release)](https://github.com/kabzon93region/quest-task-manager/releases)
+[![APK downloads](https://img.shields.io/github/downloads/kabzon93region/quest-task-manager/total?label=APK%20downloads)](https://github.com/kabzon93region/quest-task-manager/releases)
+[![Android](https://img.shields.io/badge/Android-10%2B%20(API%2029)-3DDC84?logo=android&logoColor=white)](https://developer.android.com/about/versions/10)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Meta Quest](https://img.shields.io/badge/Meta%20Quest-2%20%2F%203%20%2F%20Pro-0082FC?logo=meta&logoColor=white)](https://www.meta.com/quest/)
+[![Shizuku](https://img.shields.io/badge/Shizuku-required-546E7A)](https://shizuku.rikka.app/)
 
 **Диспетчер задач для Meta Quest** — просмотр и закрытие приложений, управление правами фона, очистка по уведомлению. Работает **автономно** через [Shizuku](https://shizuku.rikka.app/).
 
