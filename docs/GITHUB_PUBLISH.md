@@ -76,16 +76,15 @@ git push -u origin main
 
 ## Часть 3. GitHub Release
 
-### v1.4.1 (следующий — патч после v1.4.0)
+### v1.4.1 (опубликован)
 
-1. Репозиторий → **Releases** → **Draft a new release**
-2. **Tag:** `v1.4.1` (create new tag on `main`)
-3. **Title:** `Quest Task Manager v1.4.1`
-4. **Description** — скопировать из [RELEASE_NOTES_v1.4.1.md](RELEASE_NOTES_v1.4.1.md)
-5. Прикрепить: `dist\QTaskMgr-v1.4.1-release.apk`
-6. **Set as the latest release** → **Publish release**
+Тег `v1.4.1`, описание: [RELEASE_NOTES_v1.4.1.md](RELEASE_NOTES_v1.4.1.md), asset `QTaskMgr-v1.4.1-release.apk`.
 
-### v1.4.0 (опубликован — накопительный после v1.2.14)
+Прямая ссылка на APK (шаблон для README и плашек):
+
+`https://github.com/kabzon93region/Quest-Task-Manager/releases/download/vX.Y.Z/QTaskMgr-vX.Y.Z-release.apk`
+
+### v1.4.0 (накопительный после v1.2.14)
 
 Тег `v1.4.0`, описание: [RELEASE_NOTES_v1.4.0.md](RELEASE_NOTES_v1.4.0.md), asset `QTaskMgr-v1.4.0-release.apk`.
 
@@ -93,6 +92,7 @@ git push -u origin main
 
 | Версия | Примечание |
 |--------|------------|
+| v1.4.1 | DonationAlerts в настройках |
 | v1.4.0 | Накопительный релиз поколения 1.4 (после v1.2.14) |
 | v1.2.14 | Стабильный релиз поколения 1.2 (накопительный после v1.2.0) |
 | v1.2.0 | Вкладка «Лог» |
@@ -117,7 +117,7 @@ git push -u origin main
 ### GitHub CLI
 
 ```powershell
-gh release create v1.4.1 dist\QTaskMgr-v1.4.1-release.apk --title "Quest Task Manager v1.4.1" --notes-file docs\RELEASE_NOTES_v1.4.1.md
+gh release create v1.4.2 dist\QTaskMgr-v1.4.2-release.apk --title "Quest Task Manager v1.4.2" --notes-file docs\RELEASE_NOTES_v1.4.2.md
 ```
 
 ---

@@ -12,8 +12,8 @@
 | Документ | Описание |
 |----------|----------|
 | [VERSIONING.md](VERSIONING.md) | Схема X.Y.Z |
-| [RELEASE_NOTES_v1.4.1.md](RELEASE_NOTES_v1.4.1.md) | **v1.4.1** — DonationAlerts (следующий релиз на GitHub) |
-| [RELEASE_NOTES_v1.4.0.md](RELEASE_NOTES_v1.4.0.md) | **v1.4.0** — накопительный релиз после v1.2.14 (опубликован) |
+| [RELEASE_NOTES_v1.4.1.md](RELEASE_NOTES_v1.4.1.md) | **v1.4.1** — DonationAlerts (опубликован) |
+| [RELEASE_NOTES_v1.4.0.md](RELEASE_NOTES_v1.4.0.md) | **v1.4.0** — накопительный релиз после v1.2.14 |
 | [RELEASE_NOTES_v1.2.14.md](RELEASE_NOTES_v1.2.14.md) | v1.2.14 — стабильный релиз поколения 1.2 |
 | [RELEASE_NOTES_v1.3.0.md](RELEASE_NOTES_v1.3.0.md) | v1.3.0 — фильтр «Демоны» (промежуточный) |
 | [RELEASE_NOTES_v1.2.13.md](RELEASE_NOTES_v1.2.13.md) | v1.2.13 — вкладки по готовности |
@@ -42,4 +42,4 @@
 
 ## Версия документации
 
-Соответствует **QTaskMgr v1.4.1** (на GitHub опубликован **v1.4.0**).
+Соответствует **QTaskMgr v1.4.1** (опубликован на GitHub).

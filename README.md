@@ -1,8 +1,8 @@
 # Quest Task Manager (QTaskMgr)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.4.0-blue)](https://github.com/kabzon93region/quest-task-manager/releases)
-[![Download APK](https://img.shields.io/badge/download-APK-brightgreen)](https://github.com/kabzon93region/quest-task-manager/releases)
+[![Release](https://img.shields.io/badge/release-v1.4.1-blue)](https://github.com/kabzon93region/Quest-Task-Manager/releases/tag/v1.4.1)
+[![Download APK](https://img.shields.io/badge/download-APK-brightgreen)](https://github.com/kabzon93region/Quest-Task-Manager/releases/download/v1.4.1/QTaskMgr-v1.4.1-release.apk)
 [![Android](https://img.shields.io/badge/Android-10%2B%20(API%2029)-3DDC84?logo=android&logoColor=white)](https://developer.android.com/about/versions/10)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Meta Quest](https://img.shields.io/badge/Meta%20Quest-2%20%2F%203%20%2F%20Pro-0082FC?logo=meta&logoColor=white)](https://www.meta.com/quest/)
@@ -15,7 +15,7 @@
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
 | **Версия** | 1.4.1 ([схема версий](docs/VERSIONING.md)) |
-| **GitHub** | [quest-task-manager](https://github.com/kabzon93region/quest-task-manager) |
+| **GitHub** | [Quest-Task-Manager](https://github.com/kabzon93region/Quest-Task-Manager) |
 
 ## Возможности
 
@@ -53,7 +53,7 @@
 
 ## Установка
 
-1. Скачайте APK из [Releases](https://github.com/kabzon93region/quest-task-manager/releases) или соберите сами.
+1. Скачайте APK из [Releases](https://github.com/kabzon93region/Quest-Task-Manager/releases) или [напрямую v1.4.1](https://github.com/kabzon93region/Quest-Task-Manager/releases/download/v1.4.1/QTaskMgr-v1.4.1-release.apk); либо соберите сами.
 2. Установите через SideQuest / `adb install -r`.
 3. На Quest: **Apps → Unknown Sources → Quest Task Manager**.
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
