@@ -111,7 +111,6 @@ quest-task-manager/
 
 Та же ссылка — во вкладке **Настройки** в приложении.
 
-> Если ваш ник на DonationAlerts другой — замените `kabzon93region` в `strings.xml` (`settings_donationalerts_url`) и в этом README.
 
 ## Связанные проекты
 
