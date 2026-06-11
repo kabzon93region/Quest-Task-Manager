@@ -76,21 +76,22 @@ git push -u origin main
 
 ## Часть 3. GitHub Release
 
-### v1.1.2 (текущий — исправление запуска)
+### v1.4.0 (текущий — накопительный после v1.2.14)
 
 1. Репозиторий → **Releases** → **Draft a new release**
-2. **Tag:** `v1.1.2` (create new tag on `main`)
-3. **Title:** `Quest Task Manager v1.1.2`
-4. **Description** — скопировать из [RELEASE_NOTES_v1.1.2.md](RELEASE_NOTES_v1.1.2.md)
-5. Прикрепить: `dist\QTaskMgr-v1.1.2-release.apk`
+2. **Tag:** `v1.4.0` (create new tag on `main`)
+3. **Title:** `Quest Task Manager v1.4.0`
+4. **Description** — скопировать из [RELEASE_NOTES_v1.4.0.md](RELEASE_NOTES_v1.4.0.md)
+5. Прикрепить: `dist\QTaskMgr-v1.4.0-release.apk`
 6. **Set as the latest release** → **Publish release**
 
 ### Предыдущие релизы
 
 | Версия | Примечание |
 |--------|------------|
-| v1.1.1 | Подпись APK; возможны зависания при запуске — обновиться до v1.1.2 |
-| v1.1.0 | Без подписи — `INSTALL_PARSE_FAILED_NO_CERTIFICATES` |
+| v1.2.14 | Стабильный релиз поколения 1.2 (накопительный после v1.2.0) |
+| v1.2.0 | Вкладка «Лог» |
+| v1.1.x | Ранние публичные сборки |
 
 ---
 
@@ -111,7 +112,7 @@ git push -u origin main
 ### GitHub CLI
 
 ```powershell
-gh release create v1.1.2 dist\QTaskMgr-v1.1.2-release.apk --title "Quest Task Manager v1.1.2" --notes-file docs\RELEASE_NOTES_v1.1.2.md
+gh release create v1.4.0 dist\QTaskMgr-v1.4.0-release.apk --title "Quest Task Manager v1.4.0" --notes-file docs\RELEASE_NOTES_v1.4.0.md
 ```
 
 ---

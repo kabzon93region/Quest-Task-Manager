@@ -8,15 +8,16 @@
 |---|---|
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
-| **Версия** | 1.2.12 ([схема версий](docs/VERSIONING.md)) |
+| **Версия** | 1.4.0 ([схема версий](docs/VERSIONING.md)) |
+| **GitHub** | [quest-task-manager](https://github.com/kabzon93region/quest-task-manager) |
 
 ## Возможности
 
 | Вкладка | Описание |
 |---------|----------|
-| **Запущенные** | Процессы (ps + meminfo), RAM/диск, фильтр user/system, закрытие (все / выбранные / по правилам / тап) |
-| **Приложения** | Список установленных apps, переключатели «Фон» и «Данные» (Android `appops` / `netpolicy`) |
-| **Настройки** | Shizuku, **Настройки Android** (`com.android.settings`), уведомление очистки, лог |
+| **Запущенные** | Процессы (ps + meminfo), RAM устройства и на карточке, фильтры Все / Пользовательские / Системные / **Демоны**, **поиск**, закрытие (все / выбранные / по правилам) |
+| **Приложения** | Список установленных apps, те же фильтры и поиск, переключатели «Фон» и «Данные» (`appops` / `netpolicy`) |
+| **Настройки** | Версия, GitHub, Shizuku, **Настройки Android**, уведомление очистки, лог |
 | **Лог** | Просмотр файла лога в реальном времени |
 
 ## Требования
@@ -52,7 +53,7 @@
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
 
 ```powershell
-adb install -r dist\QTaskMgr-v1.2.12-release.apk
+adb install -r dist\QTaskMgr-v1.4.0-release.apk
 ```
 
 ## Быстрый старт
@@ -85,9 +86,9 @@ quest-task-manager/
 │   ├── README.md
 │   ├── THIRD_PARTY.md
 │   ├── GITHUB_PUBLISH.md
-│   ├── RELEASE_NOTES_v1.1.0.md
-│   ├── RELEASE_NOTES_v1.1.1.md
-│   └── RELEASE_NOTES_v1.1.2.md
+│   ├── VERSIONING.md
+│   ├── RELEASE_NOTES_v1.4.0.md   # актуальный для GitHub Releases
+│   └── RELEASE_NOTES_v*.md
 ├── scripts/
 ├── src/quest-app/          # Android Gradle project
 └── dist/                   # собранные APK (в .gitignore)
@@ -110,4 +111,4 @@ quest-task-manager/
 
 ## Disclaimer
 
-Не аффилирован с Meta Platforms, Inc. или Google LLC. Используйте на свой риск. Закрытие системных процессов Quest ограничено whitelist'ом в приложении.
+Не аффилирован с Meta Platforms, Inc. или Google LLC. Используйте на свой риск — закрытие системных процессов и демонов может повлиять на стабильность шлема.
