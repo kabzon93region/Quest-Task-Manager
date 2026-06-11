@@ -13,7 +13,7 @@ if (-not $env:JAVA_HOME) {
 $env:ANDROID_HOME = $sdkRoot
 if ($env:JAVA_HOME) { $env:Path = "$env:JAVA_HOME\bin;$sdkRoot\platform-tools;$env:Path" }
 
-$versionName = "1.2.10"
+$versionName = "1.2.13"
 $gradleLocal = "B:\quest3\PC\quest-task-killer\.gradle-local\gradle-8.2\bin\gradle.bat"
 $gradle = if (Test-Path $gradleLocal) { $gradleLocal } else { Join-Path $project "gradlew.bat" }
 

@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.quest3.taskmanager.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 import com.quest3.taskmanager.ui.AllAppsFragment
 import com.quest3.taskmanager.ui.RunningTasksFragment
 import com.quest3.taskmanager.ui.LogFragment
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        binding.viewPager.offscreenPageLimit = 1
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount() = 4
             override fun createFragment(position: Int): Fragment = when (position) {
@@ -57,6 +60,8 @@ class MainActivity : AppCompatActivity() {
                 else -> getString(R.string.tab_log)
             }
         }.attach()
+
+        binding.viewPager.post { bootstrapListTabs() }
 
         Shizuku.addRequestPermissionResultListener(permissionListener)
         requestShizukuIfNeeded()
@@ -100,6 +105,16 @@ class MainActivity : AppCompatActivity() {
     private fun requestShizukuIfNeeded() {
         if (Shizuku.pingBinder() && Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
             Shizuku.requestPermission(0)
+        }
+    }
+
+    private fun bootstrapListTabs() {
+        lifecycleScope.launch {
+            ListTabsBootstrap.bootstrap(
+                context = this@MainActivity,
+                running = supportFragmentManager.findFragmentByTag("f0") as? RunningTasksFragment,
+                allApps = supportFragmentManager.findFragmentByTag("f1") as? AllAppsFragment
+            )
         }
     }
 

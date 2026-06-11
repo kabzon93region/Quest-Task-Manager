@@ -8,7 +8,7 @@
 |---|---|
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
-| **Версия** | 1.2.10 ([схема версий](docs/VERSIONING.md)) |
+| **Версия** | 1.2.12 ([схема версий](docs/VERSIONING.md)) |
 
 ## Возможности
 
@@ -52,7 +52,7 @@
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
 
 ```powershell
-adb install -r dist\QTaskMgr-v1.2.10-release.apk
+adb install -r dist\QTaskMgr-v1.2.12-release.apk
 ```
 
 ## Быстрый старт

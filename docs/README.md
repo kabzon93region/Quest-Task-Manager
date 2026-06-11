@@ -12,6 +12,9 @@
 | Документ | Описание |
 |----------|----------|
 | [VERSIONING.md](VERSIONING.md) | Схема X.Y.Z |
+| [RELEASE_NOTES_v1.2.13.md](RELEASE_NOTES_v1.2.13.md) | v1.2.13 — вкладки по готовности |
+| [RELEASE_NOTES_v1.2.12.md](RELEASE_NOTES_v1.2.12.md) | v1.2.12 — кэш, параллельный старт |
+| [RELEASE_NOTES_v1.2.11.md](RELEASE_NOTES_v1.2.11.md) | v1.2.11 — preload списков |
 | [RELEASE_NOTES_v1.2.10.md](RELEASE_NOTES_v1.2.10.md) | v1.2.10 — DeepLink Homepage |
 | [RELEASE_NOTES_v1.2.9.md](RELEASE_NOTES_v1.2.9.md) | v1.2.9 — kill, Homepage only |
 | [RELEASE_NOTES_v1.2.8.md](RELEASE_NOTES_v1.2.8.md) | v1.2.8 — kill, главная Android Settings |
