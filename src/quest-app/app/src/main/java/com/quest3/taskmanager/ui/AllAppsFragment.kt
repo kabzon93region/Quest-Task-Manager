@@ -53,18 +53,23 @@ class AllAppsFragment : Fragment() {
         binding.btnRefresh.setOnClickListener { refresh() }
 
         filter = AppFilter.USER
+        updateFilterChips(filter)
         refresh()
     }
 
+    private fun updateFilterChips(f: AppFilter) {
+        binding.chipAll.isChecked = f == AppFilter.ALL
+        binding.chipUser.isChecked = f == AppFilter.USER
+        binding.chipSystem.isChecked = f == AppFilter.SYSTEM
+    }
+
     private fun openAppDetails(entry: AppEntry) {
-        val ctx = requireContext()
-        if (!AndroidSettingsLauncher.openAppDetails(ctx, entry.packageName)) {
-            Toast.makeText(ctx, R.string.settings_android_launch_failed, Toast.LENGTH_LONG).show()
-        }
+        AndroidSettingsLauncher.openAppDetailsWithUi(requireContext(), entry.packageName)
     }
 
     private fun applyFilter(f: AppFilter) {
         filter = f
+        updateFilterChips(f)
         adapter.submitList(allItems.filter { it.matchesFilter(filter) })
     }
 

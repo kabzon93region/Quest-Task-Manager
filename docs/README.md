@@ -11,6 +11,12 @@
 
 | Документ | Описание |
 |----------|----------|
+| [VERSIONING.md](VERSIONING.md) | Схема X.Y.Z |
+| [RELEASE_NOTES_v1.2.10.md](RELEASE_NOTES_v1.2.10.md) | v1.2.10 — DeepLink Homepage |
+| [RELEASE_NOTES_v1.2.9.md](RELEASE_NOTES_v1.2.9.md) | v1.2.9 — kill, Homepage only |
+| [RELEASE_NOTES_v1.2.8.md](RELEASE_NOTES_v1.2.8.md) | v1.2.8 — kill, главная Android Settings |
+| [RELEASE_NOTES_v1.2.7.md](RELEASE_NOTES_v1.2.7.md) | v1.2.7 — схема версий, диалог Android Settings |
+| [RELEASE_NOTES_v1.2.0.md](RELEASE_NOTES_v1.2.0.md) | v1.2.0 — kill, Android Settings главная |
 | [RELEASE_NOTES_v1.1.3.md](RELEASE_NOTES_v1.1.3.md) | v1.1.3 — настройки, список, kill |
 | [RELEASE_NOTES_v1.1.2.md](RELEASE_NOTES_v1.1.2.md) | v1.1.2 — запуск и лог |
 | [RELEASE_NOTES_v1.1.1.md](RELEASE_NOTES_v1.1.1.md) | v1.1.1 — подпись APK |

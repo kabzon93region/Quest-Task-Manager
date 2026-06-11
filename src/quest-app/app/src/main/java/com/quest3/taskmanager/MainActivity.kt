@@ -1,8 +1,12 @@
 package com.quest3.taskmanager
 
+import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
@@ -56,6 +60,41 @@ class MainActivity : AppCompatActivity() {
 
         Shizuku.addRequestPermissionResultListener(permissionListener)
         requestShizukuIfNeeded()
+        ensureNotificationPermissionIfNeeded()
+        AppSettings.syncNotificationService(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppSettings.syncNotificationService(this)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_NOTIFICATIONS &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            AppSettings.syncNotificationService(this)
+        }
+    }
+
+    private fun ensureNotificationPermissionIfNeeded() {
+        if (!AppSettings.isNotificationEnabled(this)) return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                REQUEST_NOTIFICATIONS
+            )
+        }
     }
 
     private fun requestShizukuIfNeeded() {
@@ -67,5 +106,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         Shizuku.removeRequestPermissionResultListener(permissionListener)
         super.onDestroy()
+    }
+
+    companion object {
+        private const val REQUEST_NOTIFICATIONS = 100
     }
 }

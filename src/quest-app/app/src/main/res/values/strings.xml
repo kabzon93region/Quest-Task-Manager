@@ -39,9 +39,10 @@
     <string name="settings_open_shizuku">Открыть Shizuku</string>
     <string name="settings_open_android">Настройки Android</string>
     <string name="settings_android_hint">Специальные возможности, разрешения, параметры разработчика (ADB)</string>
-    <string name="settings_android_missing_title">com.android.settings не найден</string>
-    <string name="settings_android_missing_message">На устройстве нет приложения Android Settings (com.android.settings).\n\nОбычно оно уже в прошивке Quest. Если отсутствует — установите обёртку через SideQuest или adb:\n\n• XR Native Android Settings\n  https://anagan79.itch.io/xr-native-android-settings\n\n• Quest Hidden Settings\n  https://github.com/threethan/QuestHiddenSettings/releases</string>
+    <string name="settings_android_missing_title">Android Settings не установлены</string>
+    <string name="settings_android_missing_message">На Meta Quest приложение Android Settings (com.android.settings) по умолчанию отсутствует — его нет «из коробки», как на телефоне.\n\nЧасто пакет появляется после установки другой утилиты (Quest Games Optimizer, APK через SideQuest и т.п.).\n\nЕсли com.android.settings не найден, установите одну из обёрток:\n\n• Quest Games Optimizer (QGO)\n  https://anagan79.itch.io/quest-games-optimizer\n\n• XR Native Android Settings\n  https://anagan79.itch.io/xr-native-android-settings\n\n• Quest Hidden Settings\n  https://github.com/threethan/QuestHiddenSettings/releases</string>
     <string name="settings_android_launch_failed">Не удалось открыть Android Settings</string>
+    <string name="settings_android_launch_failed_hint">Пакет com.android.settings найден, но главный экран недоступен. Установите обёртку из раздела README (QGO, XR Native, Hidden Settings).</string>
     <string name="settings_instructions_title">Инструкция</string>
     <string name="settings_instructions">1. Включите Developer Mode на Quest.\n2. Установите и запустите Shizuku (pairing или USB).\n3. В Shizuku → Manage apps → разрешите Quest Task Manager.\n4. Вкладка «Запущенные» — закрытие процессов.\n5. Вкладка «Приложения» — права фона и интернета.\n6. Включите «Фоновая очистка» — тап по уведомлению закрывает apps с запрещённым фоном.\n\nЛицензия: MIT. Сторонние компоненты — см. README на GitHub.</string>
 

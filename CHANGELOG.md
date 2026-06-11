@@ -2,6 +2,53 @@
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/).
 
+## [1.2.10] — 2026-06-11
+
+### Исправлено
+- Кнопка «Настройки Android»: `DeepLinkHomepageActivity` (Homepage не exported).
+
+## [1.2.9] — 2026-06-11
+
+### Исправлено
+- Kill: успех при `am force-stop` (ложный fail из‑за `com.pkg.service.*` в ps).
+- Settings: только `SettingsHomepageActivity`, убраны launcher/ManageApplications.
+
+## [1.2.8] — 2026-06-11
+
+### Исправлено
+- Kill: ожидание завершения процесса после `am force-stop` (не «закрыто 0 / не удалось 1» при успехе).
+- Настройки Android: главный экран через intent из foreground app (без «моргания» shell).
+
+### Изменено
+- Версия **1.2.7** по схеме X.Y.Z (удалена ошибочная нумерация 1.10.*).
+
+## [1.2.1] — 2026-06-11
+
+### Добавлено
+- README: раздел «Android Settings на Quest» со ссылками (QGO, XR Native, Hidden Settings).
+
+### Исправлено
+- Диалог при отсутствии `com.android.settings` — из кнопки настроек и при тапе по приложению в списках.
+
+## [1.2.0] — 2026-06-11
+
+### Исправлено
+- Kill: краш Shizuku `process hasn't exited` при `exitValue()` после `am force-stop`.
+- Кнопка «Настройки Android» → `SettingsHomepageActivity` (главная), не `SystemDashboard`.
+
+## [1.1.9] — 2026-06-11
+
+### Исправлено
+- Chip «Пользовательские» подсвечен по умолчанию (совпадает с фильтром списка).
+- Уведомление: default on + `syncNotificationService` при старте/resume app.
+
+## [1.1.8] — 2026-06-11
+
+### Исправлено
+- Settings shell: `com.android.settings/.Class` (пропущенный `/` ломал все запуски в v1.1.7).
+- Клик по плашке на вкладке «Приложения» — зона иконка+текст, switches изолированы.
+- Running: больше установленных процессов в списке (фильтр только native + not installed).
+
 ## [1.1.7] — 2026-06-10
 
 ### Исправлено

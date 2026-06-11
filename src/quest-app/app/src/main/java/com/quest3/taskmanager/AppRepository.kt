@@ -16,11 +16,13 @@ class AppRepository(private val context: Context) {
         requireShizuku()
         val snapshot = RunningAppsProbe.collectRunningSnapshot()
         val installed = installedPackageNames()
-        val packages = snapshot.displayPackages
-            .filter { it in installed && RunningAppsProbe.isLikelyPackageName(it) }
+        val raw = snapshot.psPackages + snapshot.ramMap.byPackage.filter { (_, kb) -> kb > 0 }.keys +
+            snapshot.ramMap.activePackages + snapshot.ramMap.cachedOnlyPackages
+        val packages = raw
+            .filter { it in installed && !RunningAppsProbe.isNativeProcessName(it) }
             .toSet()
         FileLogger.d(
-            "running filter: raw=${snapshot.displayPackages.size} " +
+            "running filter: raw=${raw.size} ps=${snapshot.psPackages.size} " +
                 "installed=${packages.size}"
         )
         val disk = StorageProbe.loadDiskSizes(packages)

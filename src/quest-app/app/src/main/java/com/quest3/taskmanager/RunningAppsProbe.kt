@@ -9,7 +9,7 @@ data class RunningSnapshot(
             psPackages +
             ramMap.activePackages +
             ramMap.cachedOnlyPackages)
-            .filter { RunningAppsProbe.isLikelyPackageName(it) }
+            .filter { !RunningAppsProbe.isNativeProcessName(it) }
             .toSet()
 
     fun processState(pkg: String): ProcessState = when {
@@ -72,10 +72,15 @@ object RunningAppsProbe {
         "android.", "media.", "hidl.", "vendor.", "system.", "webview",
     )
 
+    internal fun isNativeProcessName(name: String): Boolean {
+        if (!name.contains('.')) return true
+        if (name.contains('@') || name.contains(':')) return true
+        return NATIVE_PROCESS_PREFIXES.any { name.startsWith(it) }
+    }
+
     internal fun isLikelyPackageName(name: String): Boolean {
         if (!name.contains('.')) return false
-        if (name.contains('@') || name.contains(':')) return false
-        if (NATIVE_PROCESS_PREFIXES.any { name.startsWith(it) }) return false
+        if (isNativeProcessName(name)) return false
         if (!PACKAGE_ROOT_PREFIXES.any { name.startsWith(it) }) return false
         val segments = name.split('.')
         if (segments.size < 3) return false

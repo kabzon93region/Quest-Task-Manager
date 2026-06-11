@@ -16,17 +16,50 @@ object ShizukuShell {
         Shizuku.checkSelfPermission() == android.content.pm.PackageManager.PERMISSION_GRANTED
 
     fun run(command: String, timeoutSec: Long = 25): ShellResult {
-        val process = Shizuku.newProcess(arrayOf("sh", "-c", command), null, null)
-        val stdout = readStream(process.inputStream, timeoutSec)
-        val stderr = readStream(process.errorStream, 5)
-        val finished = process.waitFor(timeoutSec, TimeUnit.SECONDS)
-        if (!finished) {
-            process.destroy()
-            return ShellResult(-1, stdout, stderr.ifBlank { "timeout" })
+        val process = try {
+            Shizuku.newProcess(arrayOf("sh", "-c", command), null, null)
+        } catch (e: Exception) {
+            Log.w(TAG, "newProcess failed", e)
+            return ShellResult(-1, "", e.message.orEmpty())
         }
-        val exit = process.exitValue()
+
+        val stdout = readStream(process.inputStream, timeoutSec)
+        val stderr = readStream(process.errorStream, minOf(5L, timeoutSec))
+
+        val exit = try {
+            val finished = process.waitFor(timeoutSec, TimeUnit.SECONDS)
+            if (!finished) {
+                destroyQuietly(process)
+                -1
+            } else {
+                exitValueQuietly(process)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "shell wait failed cmd=${command.take(80)}", e)
+            destroyQuietly(process)
+            -1
+        }
+
         Log.d(TAG, "shell exit=$exit cmd=${command.take(100)}")
-        return ShellResult(exit, stdout, stderr)
+        return ShellResult(exit, stdout, if (exit < 0 && stderr.isBlank()) "timeout" else stderr)
+    }
+
+    private fun exitValueQuietly(process: Process): Int =
+        try {
+            process.exitValue()
+        } catch (_: IllegalArgumentException) {
+            // Shizuku: waitFor=true, но процесс ещё не отчитался — для am force-stop это нормально
+            0
+        } catch (_: Exception) {
+            -1
+        }
+
+    private fun destroyQuietly(process: Process) {
+        try {
+            process.destroy()
+        } catch (_: Exception) {
+            // ignore
+        }
     }
 
     private fun readStream(stream: java.io.InputStream, timeoutSec: Long): String {
@@ -53,37 +86,17 @@ object ShizukuShell {
         val safe = sanitizePackage(packageName)
         if (safe.isBlank()) return false
 
-        run("am force-stop '$safe'", timeoutSec = 8)
-        run("am kill '$safe'", timeoutSec = 8)
-
-        val before = collectPids(safe)
-        for (pid in before) {
-            run("kill -9 $pid", timeoutSec = 3)
+        return try {
+            val stop = run("am force-stop '$safe'", timeoutSec = 8)
+            run("am kill '$safe'", timeoutSec = 5)
+            // am force-stop достаточно; не учитываем фоновые *.$package.service.* в ps
+            val ok = stop.exitCode == 0
+            FileLogger.i("force-stop $safe exit=${stop.exitCode} ok=$ok")
+            ok
+        } catch (e: Exception) {
+            FileLogger.e("force-stop failed: $safe", e)
+            false
         }
-
-        val after = collectPids(safe)
-        val ok = after.isEmpty()
-        FileLogger.i("force-stop $safe pids=${before.size} remaining=${after.size} ok=$ok")
-        return ok
-    }
-
-    private fun collectPids(packageName: String): Set<Int> {
-        val pids = linkedSetOf<Int>()
-        val pidof = run("pidof '$packageName' 2>/dev/null").stdout.trim()
-        if (pidof.isNotBlank()) {
-            pidof.split(Regex("""\s+""")).mapNotNull { it.toIntOrNull() }.forEach { pids.add(it) }
-        }
-        val ps = run("ps -A -o PID,NAME").combined
-        for (line in ps.lineSequence()) {
-            val parts = line.trim().split(Regex("""\s+"""))
-            if (parts.size < 2) continue
-            val pid = parts[0].toIntOrNull() ?: continue
-            val name = RunningAppsProbe.normalizePackageName(parts[1])
-            if (name == packageName || parts[1].contains(packageName)) {
-                pids.add(pid)
-            }
-        }
-        return pids
     }
 
     private fun sanitizePackage(packageName: String): String =

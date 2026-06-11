@@ -26,7 +26,6 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="@string/filter_all" />
 
             <com.google.android.material.chip.Chip
@@ -34,6 +33,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="@string/filter_user" />
 
             <com.google.android.material.chip.Chip

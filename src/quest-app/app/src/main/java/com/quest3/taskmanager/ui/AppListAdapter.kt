@@ -76,6 +76,10 @@ class AppListAdapter(
             }
             binding.memory.text = ctx.getString(R.string.memory_line, diskText, ramText)
 
+            binding.root.setOnClickListener(null)
+            binding.root.isClickable = false
+            binding.appInfoArea.setOnClickListener { onItemClick(entry) }
+
             when (mode) {
                 AppListMode.RUNNING -> {
                     binding.checkSelect.visibility = View.VISIBLE
@@ -86,17 +90,10 @@ class AppListAdapter(
                         if (checked) selected.add(entry.packageName) else selected.remove(entry.packageName)
                         onSelectionChanged(selected.toSet())
                     }
-                    binding.root.setOnClickListener { onItemClick(entry) }
                 }
                 AppListMode.ALL_APPS -> {
                     binding.checkSelect.visibility = View.GONE
                     binding.policyControls.visibility = View.VISIBLE
-                    val openDetails = View.OnClickListener { onItemClick(entry) }
-                    binding.label.setOnClickListener(openDetails)
-                    binding.packageName.setOnClickListener(openDetails)
-                    binding.icon.setOnClickListener(openDetails)
-                    binding.memory.setOnClickListener(openDetails)
-                    binding.root.setOnClickListener(openDetails)
                     suppressSwitch = true
                     binding.switchRunBg.isChecked = entry.runInBackgroundAllowed == true
                     binding.switchBgData.isChecked = entry.backgroundDataAllowed == true

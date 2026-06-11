@@ -8,7 +8,7 @@
 |---|---|
 | **Разработчик** | [kabzon93region](https://github.com/kabzon93region) |
 | **Package** | `com.quest3.taskmanager` |
-| **Версия** | 1.1.5 |
+| **Версия** | 1.2.10 ([схема версий](docs/VERSIONING.md)) |
 
 ## Возможности
 
@@ -24,7 +24,25 @@
 - Meta Quest 2 / 3 / Pro, **Developer Mode**
 - [Shizuku](https://shizuku.rikka.app/) с разрешением для QTaskMgr
 
-**Не требуется:** No More Background, QTKiller — QTaskMgr v1.1 включает свою очистку по правилам через уведомление.
+**Не требуется:** No More Background, QTKiller — QTaskMgr включает свою очистку по правилам через уведомление.
+
+## Android Settings на Quest
+
+Кнопка **«Настройки Android»** и тап по приложению в списке открывают пакет `com.android.settings` (как на телефоне: Wi‑Fi, приложения, спец. возможности, режим разработчика).
+
+**На Quest этого приложения нет «из коробки»** — в системном меню Meta его не видно. Пакет `com.android.settings` обычно **попадает на шлем вместе с другой утилитой**, например при установке через SideQuest или Quest Games Optimizer. Если вы когда‑то ставили QGO, Hidden Settings или похожий APK — Android Settings, скорее всего, уже есть.
+
+Проверка: вкладка **Настройки** → **Настройки Android**. Если пакет не найден, QTaskMgr покажет диалог с ссылками (тот же текст, что ниже).
+
+### Где взять Android Settings
+
+| Вариант | Описание | Ссылка |
+|---------|----------|--------|
+| **Quest Games Optimizer (QGO)** | Часто ставят через SideQuest; в QGO есть кнопка «Open Settings» / встроенный доступ к Android Settings | [anagan79.itch.io/quest-games-optimizer](https://anagan79.itch.io/quest-games-optimizer) |
+| **XR Native Android Settings** | Отдельная обёртка под VR | [anagan79.itch.io/xr-native-android-settings](https://anagan79.itch.io/xr-native-android-settings) |
+| **Quest Hidden Settings** | Популярная обёртка от threethan | [GitHub Releases](https://github.com/threethan/QuestHiddenSettings/releases) |
+
+Установка — через SideQuest, `adb install`, Mobile VR Station или встроенный установщик в выбранной утилите. После появления `com.android.settings` кнопка в QTaskMgr начнёт работать без переустановки самого QTaskMgr.
 
 ## Установка
 
@@ -34,7 +52,7 @@
 4. Запустите Shizuku, выдайте разрешение QTaskMgr.
 
 ```powershell
-adb install -r dist\QTaskMgr-v1.1.3-release.apk
+adb install -r dist\QTaskMgr-v1.2.10-release.apk
 ```
 
 ## Быстрый старт

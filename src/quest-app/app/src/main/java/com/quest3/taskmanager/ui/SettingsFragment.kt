@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -53,11 +51,10 @@ class SettingsFragment : Fragment() {
                     )
                 }
                 prefs.edit().putBoolean(AppSettings.KEY_NOTIFICATION, true).apply()
-                CleanupForegroundService.start(requireContext())
             } else {
                 prefs.edit().putBoolean(AppSettings.KEY_NOTIFICATION, false).apply()
-                CleanupForegroundService.stop(requireContext())
             }
+            AppSettings.syncNotificationService(requireContext())
         }
 
         binding.switchLogging.setOnCheckedChangeListener { _, checked ->
@@ -99,19 +96,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun openAndroidSettings() {
-        val ctx = requireContext()
-        if (!AndroidSettingsLauncher.isInstalled(ctx)) {
-            FileLogger.w("btn: ${AndroidSettingsLauncher.PACKAGE} not installed")
-            AlertDialog.Builder(ctx)
-                .setTitle(R.string.settings_android_missing_title)
-                .setMessage(R.string.settings_android_missing_message)
-                .setPositiveButton(android.R.string.ok, null)
-                .show()
-            return
-        }
-        if (!AndroidSettingsLauncher.open(ctx)) {
-            Toast.makeText(ctx, R.string.settings_android_launch_failed, Toast.LENGTH_LONG).show()
-        }
+        AndroidSettingsLauncher.openMainWithUi(requireContext())
     }
 
     override fun onDestroyView() {

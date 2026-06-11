@@ -14,5 +14,22 @@ object AppSettings {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     fun isNotificationEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_NOTIFICATION, false)
+        prefs(context).getBoolean(KEY_NOTIFICATION, true)
+
+    /** Синхронизирует foreground-сервис с переключателем в настройках. */
+    fun syncNotificationService(context: Context) {
+        val enabled = isNotificationEnabled(context)
+        val running = CleanupForegroundService.isRunning(context)
+        when {
+            enabled && !running -> {
+                CleanupForegroundService.start(context)
+                FileLogger.i("notification sync: started (pref=on)")
+            }
+            !enabled && running -> {
+                CleanupForegroundService.stop(context)
+                FileLogger.i("notification sync: stopped (pref=off)")
+            }
+            else -> FileLogger.d("notification sync: ok enabled=$enabled running=$running")
+        }
+    }
 }

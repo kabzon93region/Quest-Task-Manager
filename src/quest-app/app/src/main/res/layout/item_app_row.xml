@@ -29,20 +29,32 @@
             android:visibility="gone"
             app:buttonTint="@color/accent_cyan" />
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="10dp"
-            android:contentDescription="@null"
-            android:scaleType="centerCrop"
-            tools:src="@android:drawable/sym_def_app_icon" />
-
         <LinearLayout
+            android:id="@+id/appInfoArea"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingVertical="4dp">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                tools:src="@android:drawable/sym_def_app_icon" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
             <TextView
                 android:id="@+id/label"
@@ -74,6 +86,7 @@
                 android:textColor="@color/accent_cyan"
                 android:textSize="13sp"
                 tools:text="Диск: 142 MB • RAM: 38 MB" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -81,6 +94,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:descendantFocusability="blocksDescendants"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone">
